@@ -2,29 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-investigate-and-resolve-the-something-went-wrong-error-appearing-in-the-draft-preview-by-examining-the-productgrid-component-s-error-handling-logic-the-searchproducts-query-response-handling-in-usequeries-ts-and-the-backend-searchproducts-method-to-identify-the-root-cause-of-the-failure",
-      "featureTitle": "Investigate and resolve the 'Something went wrong!' error appearing in the draft preview by examining the ProductGrid component's error handling logic, the searchProducts query response handling in useQueries.ts, and the backend searchProducts method to identify the root cause of the failure",
-      "files": [
-        "frontend/src/components/ProductGrid.tsx",
-        "frontend/src/hooks/useQueries.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-32"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-fallback-error-recovery-in-the-productgrid-component-in-frontend-src-components-productgrid-tsx-to-handle-cases-where-the-searchproducts-query-fails-displaying-a-user-friendly-error-message-with-actionable-troubleshooting-steps-instead-of-the-generic-something-went-wrong-message",
-      "featureTitle": "Add fallback error recovery in the ProductGrid component in frontend/src/components/ProductGrid.tsx to handle cases where the searchProducts query fails, displaying a user-friendly error message with actionable troubleshooting steps instead of the generic 'Something went wrong!' message",
+      "featureId": "feature-add-comprehensive-console-logging-in-frontend-src-components-productgrid-tsx-at-component-render-to-log-query-isloading-boolean-query-iserror-boolean-query-error-object-if-present-query-data-structure-products-array-existence-and-length-and-first-product-object-details-if-array-is-non-empty",
+      "featureTitle": "Add comprehensive console logging in frontend/src/components/ProductGrid.tsx at component render to log: query.isLoading boolean, query.isError boolean, query.error object (if present), query.data structure, products array existence and length, and first product object details if array is non-empty",
       "files": [
         "frontend/src/components/ProductGrid.tsx"
       ],
@@ -38,15 +17,14 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-33"
+        "REQ-64"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-initialization-error-detection-in-the-useactor-hook-in-frontend-src-hooks-useactor-ts-to-catch-and-report-cases-where-the-backend-actor-fails-to-initialize-or-becomes-unavailable-which-could-cause-the-something-went-wrong-error",
-      "featureTitle": "Add initialization error detection in the useActor hook in frontend/src/hooks/useActor.ts to catch and report cases where the backend actor fails to initialize or becomes unavailable, which could cause the 'Something went wrong!' error",
+      "featureId": "feature-verify-the-searchproducts-query-in-frontend-src-hooks-usequeries-ts-is-receiving-a-successful-response-from-the-backend-by-adding-detailed-logging-of-query-execution-start-filter-parameters-being-sent-raw-response-from-actor-searchproducts-response-data-structure-and-any-caught-errors-during-the-query",
+      "featureTitle": "Verify the searchProducts query in frontend/src/hooks/useQueries.ts is receiving a successful response from the backend by adding detailed logging of: query execution start, filter parameters being sent, raw response from actor.searchProducts(), response data structure, and any caught errors during the query",
       "files": [
-        "frontend/src/components/ProductGrid.tsx",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -59,7 +37,67 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-35"
+        "REQ-65"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-fix-the-data-path-in-frontend-src-components-productgrid-tsx-to-correctly-extract-the-products-array-from-the-searchproducts-query-response-verifying-the-response-structure-matches-what-the-component-expects-e-g-query-data-vs-query-data-products-vs-query-data-ok-with-nested-products-array",
+      "featureTitle": "Fix the data path in frontend/src/components/ProductGrid.tsx to correctly extract the products array from the searchProducts query response, verifying the response structure matches what the component expects (e.g., query.data vs query.data.products vs query.data.ok with nested products array)",
+      "files": [
+        "frontend/src/components/ProductGrid.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-67"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-temporary-hardcoded-test-in-frontend-src-components-productgrid-tsx-that-bypasses-the-searchproducts-query-entirely-and-renders-a-static-array-of-3-mock-products-to-isolate-whether-the-issue-is-with-data-fetching-or-rendering-logic",
+      "featureTitle": "Add a temporary hardcoded test in frontend/src/components/ProductGrid.tsx that bypasses the searchProducts query entirely and renders a static array of 3 mock products to isolate whether the issue is with data fetching or rendering logic",
+      "files": [
+        "frontend/src/components/ProductGrid.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-68"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-default-fallback-product-data-directly-in-frontend-src-hooks-usequeries-ts-searchproducts-query-that-returns-at-least-5-mock-products-if-the-backend-call-fails-or-returns-empty-results-allowing-the-ui-to-display-sample-data-for-testing",
+      "featureTitle": "Add default/fallback product data directly in frontend/src/hooks/useQueries.ts searchProducts query that returns at least 5 mock products if the backend call fails or returns empty results, allowing the UI to display sample data for testing",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-70"
       ],
       "confidence": "high"
     }

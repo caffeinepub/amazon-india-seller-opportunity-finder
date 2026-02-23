@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import CompetitorAnalysis from './pages/CompetitorAnalysis';
 import { Toaster } from '@/components/ui/sonner';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const rootRoute = createRootRoute({
   component: Layout,
@@ -39,9 +40,11 @@ declare module '@tanstack/react-router' {
 
 export default function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <RouterProvider router={router} />
-      <Toaster />
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <RouterProvider router={router} />
+        <Toaster />
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }

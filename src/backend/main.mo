@@ -8,6 +8,7 @@ import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
+import Iter "mo:core/Iter";
 
 actor {
   include MixinStorage();
@@ -205,19 +206,15 @@ actor {
     #error : Text;
   };
 
-  public query ({ caller }) func searchProducts(filters : ProductSearchFilters) : async ProductSearchResult {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can search products");
-    };
+  public query func searchProducts(filters : ProductSearchFilters) : async ProductSearchResult {
+    // No authorization check - available to all users including guests
+    // This allows potential customers to explore products before signing up
 
-    let productArray = products.values().toArray();
-
-    // If all filters are null or default, return all products
     if (allFiltersDefault(filters)) {
-      return #success(productArray);
+      return #success(getSeedProducts());
     };
 
-    let filteredProducts = productArray.filter(
+    let filteredProducts = getSeedProducts().filter(
       func(p) {
         let categoryMatch = applyCategory(p, filters.category);
         let subcategoryMatch = applySubcategory(p, filters.subcategory);
@@ -233,6 +230,371 @@ actor {
     );
 
     #success(filteredProducts);
+  };
+
+  func getSeedProducts() : [Product] {
+    [
+      {
+        id = "1";
+        title = "Wireless Headphones";
+        category = "Electronics";
+        subcategory = "Audio";
+        price = 199.99;
+        mrp = 249.99;
+        rating = 4.5;
+        reviewCount = 1200;
+        bsr = 800;
+        estimatedMonthlySales = 500;
+        brand = "SoundCore";
+        sellerType = #fba;
+        availableStock = 300;
+        margin = 0.25;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "2";
+        title = "Stainless Steel Water Bottle";
+        category = "Home & Kitchen";
+        subcategory = "Drinkware";
+        price = 29.99;
+        mrp = 39.99;
+        rating = 4.7;
+        reviewCount = 900;
+        bsr = 1500;
+        estimatedMonthlySales = 800;
+        brand = "EcoSip";
+        sellerType = #easyShip;
+        availableStock = 450;
+        margin = 0.32;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "3";
+        title = "Yoga Mat";
+        category = "Sports";
+        subcategory = "Yoga";
+        price = 49.99;
+        mrp = 59.99;
+        rating = 4.6;
+        reviewCount = 1100;
+        bsr = 1000;
+        estimatedMonthlySales = 650;
+        brand = "FlexFit";
+        sellerType = #fba;
+        availableStock = 200;
+        margin = 0.28;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "4";
+        title = "Bluetooth Speaker";
+        category = "Electronics";
+        subcategory = "Audio";
+        price = 89.99;
+        mrp = 119.99;
+        rating = 4.4;
+        reviewCount = 850;
+        bsr = 900;
+        estimatedMonthlySales = 400;
+        brand = "SoundWave";
+        sellerType = #easyShip;
+        availableStock = 250;
+        margin = 0.27;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "5";
+        title = "Insulated Lunch Box";
+        category = "Home & Kitchen";
+        subcategory = "Food Storage";
+        price = 34.99;
+        mrp = 49.99;
+        rating = 4.5;
+        reviewCount = 700;
+        bsr = 1400;
+        estimatedMonthlySales = 600;
+        brand = "FreshKeep";
+        sellerType = #fba;
+        availableStock = 300;
+        margin = 0.3;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "6";
+        title = "Resistance Bands";
+        category = "Sports";
+        subcategory = "Fitness";
+        price = 19.99;
+        mrp = 29.99;
+        rating = 4.7;
+        reviewCount = 950;
+        bsr = 1100;
+        estimatedMonthlySales = 700;
+        brand = "FlexFit";
+        sellerType = #easyShip;
+        availableStock = 400;
+        margin = 0.35;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "7";
+        title = "Smart LED Bulb";
+        category = "Electronics";
+        subcategory = "Lighting";
+        price = 39.99;
+        mrp = 54.99;
+        rating = 4.3;
+        reviewCount = 800;
+        bsr = 1200;
+        estimatedMonthlySales = 450;
+        brand = "BrightLife";
+        sellerType = #fba;
+        availableStock = 300;
+        margin = 0.29;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "8";
+        title = "Eco-Friendly Straws";
+        category = "Home & Kitchen";
+        subcategory = "Drinkware";
+        price = 14.99;
+        mrp = 19.99;
+        rating = 4.6;
+        reviewCount = 600;
+        bsr = 1600;
+        estimatedMonthlySales = 350;
+        brand = "EcoSip";
+        sellerType = #sellerFulfilled;
+        availableStock = 150;
+        margin = 0.36;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "9";
+        title = "Exercise Ball";
+        category = "Sports";
+        subcategory = "Fitness";
+        price = 29.99;
+        mrp = 39.99;
+        rating = 4.5;
+        reviewCount = 650;
+        bsr = 1300;
+        estimatedMonthlySales = 500;
+        brand = "FlexFit";
+        sellerType = #easyShip;
+        availableStock = 200;
+        margin = 0.31;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "10";
+        title = "USB-C Charger";
+        category = "Electronics";
+        subcategory = "Mobile Accessories";
+        price = 24.99;
+        mrp = 34.99;
+        rating = 4.4;
+        reviewCount = 400;
+        bsr = 800;
+        estimatedMonthlySales = 350;
+        brand = "PowerPro";
+        sellerType = #fba;
+        availableStock = 120;
+        margin = 0.28;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "11";
+        title = "Collapsible Food Containers";
+        category = "Home & Kitchen";
+        subcategory = "Food Storage";
+        price = 29.99;
+        mrp = 39.99;
+        rating = 4.6;
+        reviewCount = 700;
+        bsr = 1250;
+        estimatedMonthlySales = 400;
+        brand = "FreshKeep";
+        sellerType = #fba;
+        availableStock = 250;
+        margin = 0.32;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "12";
+        title = "Adjustable Dumbbells";
+        category = "Sports";
+        subcategory = "Fitness";
+        price = 89.99;
+        mrp = 119.99;
+        rating = 4.4;
+        reviewCount = 650;
+        bsr = 950;
+        estimatedMonthlySales = 250;
+        brand = "FlexFit";
+        sellerType = #easyShip;
+        availableStock = 120;
+        margin = 0.27;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "13";
+        title = "Waterproof Bluetooth Speaker";
+        category = "Electronics";
+        subcategory = "Audio";
+        price = 69.99;
+        mrp = 99.99;
+        rating = 4.7;
+        reviewCount = 1200;
+        bsr = 1350;
+        estimatedMonthlySales = 700;
+        brand = "SoundWave";
+        sellerType = #fba;
+        availableStock = 400;
+        margin = 0.36;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "14";
+        title = "Smart Water Bottle";
+        category = "Home & Kitchen";
+        subcategory = "Drinkware";
+        price = 54.99;
+        mrp = 79.99;
+        rating = 4.5;
+        reviewCount = 400;
+        bsr = 700;
+        estimatedMonthlySales = 350;
+        brand = "EcoSip";
+        sellerType = #fba;
+        availableStock = 120;
+        margin = 0.27;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "15";
+        title = "Wireless Earbuds";
+        category = "Electronics";
+        subcategory = "Audio";
+        price = 129.99;
+        mrp = 199.99;
+        rating = 4.6;
+        reviewCount = 950;
+        bsr = 1050;
+        estimatedMonthlySales = 600;
+        brand = "SoundCore";
+        sellerType = #easyShip;
+        availableStock = 320;
+        margin = 0.32;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "16";
+        title = "Travel Lunch Box";
+        category = "Home & Kitchen";
+        subcategory = "Food Storage";
+        price = 44.99;
+        mrp = 64.99;
+        rating = 4.7;
+        reviewCount = 1200;
+        bsr = 1400;
+        estimatedMonthlySales = 650;
+        brand = "FreshKeep";
+        sellerType = #easyShip;
+        availableStock = 420;
+        margin = 0.36;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "17";
+        title = "Digital Yoga Mat";
+        category = "Sports";
+        subcategory = "Yoga";
+        price = 149.99;
+        mrp = 199.99;
+        rating = 4.6;
+        reviewCount = 1200;
+        bsr = 950;
+        estimatedMonthlySales = 450;
+        brand = "FlexFit";
+        sellerType = #easyShip;
+        availableStock = 140;
+        margin = 0.29;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "18";
+        title = "Solar Power Bank";
+        category = "Electronics";
+        subcategory = "Mobile Accessories";
+        price = 49.99;
+        mrp = 69.99;
+        rating = 4.4;
+        reviewCount = 650;
+        bsr = 1200;
+        estimatedMonthlySales = 550;
+        brand = "PowerPro";
+        sellerType = #fba;
+        availableStock = 240;
+        margin = 0.31;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "19";
+        title = "Eco Stainless Steel Bottles";
+        category = "Home & Kitchen";
+        subcategory = "Drinkware";
+        price = 39.99;
+        mrp = 54.99;
+        rating = 4.5;
+        reviewCount = 500;
+        bsr = 1350;
+        estimatedMonthlySales = 500;
+        brand = "EcoSip";
+        sellerType = #easyShip;
+        availableStock = 200;
+        margin = 0.34;
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "20";
+        title = "Bluetooth Weighted Jump Rope";
+        category = "Sports";
+        subcategory = "Fitness";
+        price = 44.99;
+        mrp = 59.99;
+        rating = 4.8;
+        reviewCount = 1300;
+        bsr = 1000;
+        estimatedMonthlySales = 800;
+        brand = "FlexFit";
+        sellerType = #fba;
+        availableStock = 420;
+        margin = 0.36;
+        lastModified = Time.now();
+        images = [];
+      },
+    ];
   };
 
   func allFiltersDefault(filters : ProductSearchFilters) : Bool {

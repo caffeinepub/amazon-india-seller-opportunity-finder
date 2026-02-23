@@ -1,16 +1,34 @@
 import { useState, useEffect } from 'react';
-import { ProductSearchFilters } from '../backend';
 
-const STORAGE_KEY = 'product-filters';
+export interface ProductFilters {
+  category: string;
+  subcategory: string;
+  priceMin: string;
+  priceMax: string;
+  ratingThreshold: string;
+  reviewCountMax: string;
+  bsrMin: string;
+  bsrMax: string;
+  monthlyRevenueMin: string;
+  monthlyRevenueMax: string;
+  lightweightPreference: boolean;
+  nonBrandedFriendly: boolean;
+  lowFBACount: boolean;
+  highReviewGrowth: boolean;
+  highMarginThreshold: boolean;
+}
 
-const defaultFilters: ProductSearchFilters = {
-  category: undefined,
-  subcategory: undefined,
-  priceRange: undefined,
-  ratingThreshold: undefined,
-  reviewCountMax: undefined,
-  bsrRange: undefined,
-  monthlyRevenueRange: undefined,
+const defaultFilters: ProductFilters = {
+  category: '',
+  subcategory: '',
+  priceMin: '',
+  priceMax: '',
+  ratingThreshold: '',
+  reviewCountMax: '',
+  bsrMin: '',
+  bsrMax: '',
+  monthlyRevenueMin: '',
+  monthlyRevenueMax: '',
   lightweightPreference: false,
   nonBrandedFriendly: false,
   lowFBACount: false,
@@ -18,179 +36,108 @@ const defaultFilters: ProductSearchFilters = {
   highMarginThreshold: false,
 };
 
+// Helper to safely convert string to number, returns undefined if empty/invalid
+function safeParseNumber(value: string): number | undefined {
+  if (!value || value.trim() === '') return undefined;
+  const num = Number(value);
+  return isNaN(num) ? undefined : num;
+}
+
+// Helper to safely convert string to bigint, returns undefined if empty/invalid
+function safeParseBigInt(value: string): bigint | undefined {
+  if (!value || value.trim() === '') return undefined;
+  try {
+    const num = Number(value);
+    if (isNaN(num)) return undefined;
+    return BigInt(Math.floor(num));
+  } catch {
+    return undefined;
+  }
+}
+
 export function useProductFilters() {
-  const [filters, setFilters] = useState<ProductSearchFilters>(() => {
-    try {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
-      if (stored) {
+  const [filters, setFilters] = useState<ProductFilters>(() => {
+    const stored = sessionStorage.getItem('productFilters');
+    if (stored) {
+      try {
         const parsed = JSON.parse(stored);
-        
-        // Convert reviewCountMax and bsrRange back to bigint if they exist
-        if (parsed.reviewCountMax !== undefined && parsed.reviewCountMax !== null) {
-          try {
-            parsed.reviewCountMax = BigInt(parsed.reviewCountMax);
-          } catch (e) {
-            console.warn('⚠️ useProductFilters - Failed to parse reviewCountMax as bigint:', e);
-            parsed.reviewCountMax = undefined;
-          }
-        }
-        
-        if (parsed.bsrRange && Array.isArray(parsed.bsrRange) && parsed.bsrRange.length === 2) {
-          try {
-            parsed.bsrRange = [BigInt(parsed.bsrRange[0]), BigInt(parsed.bsrRange[1])];
-          } catch (e) {
-            console.warn('⚠️ useProductFilters - Failed to parse bsrRange as bigint:', e);
-            parsed.bsrRange = undefined;
-          }
-        }
-        
-        if (import.meta.env.DEV) {
-          console.log('📂 useProductFilters - Loaded filters from session storage:', {
-            category: parsed.category,
-            subcategory: parsed.subcategory,
-            priceRange: parsed.priceRange,
-            ratingThreshold: parsed.ratingThreshold,
-            reviewCountMax: parsed.reviewCountMax?.toString(),
-            bsrRange: parsed.bsrRange ? [parsed.bsrRange[0].toString(), parsed.bsrRange[1].toString()] : undefined,
-            monthlyRevenueRange: parsed.monthlyRevenueRange,
-            booleanFilters: {
-              lightweightPreference: parsed.lightweightPreference,
-              nonBrandedFriendly: parsed.nonBrandedFriendly,
-              lowFBACount: parsed.lowFBACount,
-              highReviewGrowth: parsed.highReviewGrowth,
-              highMarginThreshold: parsed.highMarginThreshold,
-            },
-          });
-        }
-        
-        return parsed;
+        // Ensure all numeric fields are strings
+        return {
+          ...defaultFilters,
+          ...parsed,
+          priceMin: String(parsed.priceMin || ''),
+          priceMax: String(parsed.priceMax || ''),
+          ratingThreshold: String(parsed.ratingThreshold || ''),
+          reviewCountMax: String(parsed.reviewCountMax || ''),
+          bsrMin: String(parsed.bsrMin || ''),
+          bsrMax: String(parsed.bsrMax || ''),
+          monthlyRevenueMin: String(parsed.monthlyRevenueMin || ''),
+          monthlyRevenueMax: String(parsed.monthlyRevenueMax || ''),
+        };
+      } catch (e) {
+        console.error('Failed to parse stored filters:', e);
+        return defaultFilters;
       }
-      
-      console.log('📂 useProductFilters - No stored filters, using defaults');
-      return defaultFilters;
-    } catch (error) {
-      console.error('❌ useProductFilters - Failed to load filters from session storage:', error);
-      return defaultFilters;
     }
+    return defaultFilters;
   });
 
   useEffect(() => {
-    try {
-      // Convert bigint to string for JSON serialization
-      const serializable = {
-        ...filters,
-        reviewCountMax: filters.reviewCountMax !== undefined ? filters.reviewCountMax.toString() : undefined,
-        bsrRange: filters.bsrRange ? [filters.bsrRange[0].toString(), filters.bsrRange[1].toString()] : undefined,
-      };
-      
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
-      
-      if (import.meta.env.DEV) {
-        console.log('💾 useProductFilters - Saved filter state to session storage:', {
-          category: filters.category,
-          subcategory: filters.subcategory,
-          priceRange: filters.priceRange,
-          ratingThreshold: filters.ratingThreshold,
-          reviewCountMax: filters.reviewCountMax?.toString(),
-          bsrRange: filters.bsrRange ? [filters.bsrRange[0].toString(), filters.bsrRange[1].toString()] : undefined,
-          monthlyRevenueRange: filters.monthlyRevenueRange,
-          booleanFilters: {
-            lightweightPreference: filters.lightweightPreference,
-            nonBrandedFriendly: filters.nonBrandedFriendly,
-            lowFBACount: filters.lowFBACount,
-            highReviewGrowth: filters.highReviewGrowth,
-            highMarginThreshold: filters.highMarginThreshold,
-          },
-        });
-      }
-    } catch (error) {
-      console.error('❌ useProductFilters - Failed to save filters to session storage:', error);
-    }
+    sessionStorage.setItem('productFilters', JSON.stringify(filters));
   }, [filters]);
 
-  const updateFilters = (updates: Partial<ProductSearchFilters>) => {
-    setFilters((prev) => {
-      const newFilters = { ...prev, ...updates };
-      
-      if (import.meta.env.DEV) {
-        console.log('🔄 useProductFilters - Updating filters:', {
-          updates: {
-            ...updates,
-            reviewCountMax: updates.reviewCountMax?.toString(),
-            bsrRange: updates.bsrRange ? [updates.bsrRange[0].toString(), updates.bsrRange[1].toString()] : undefined,
-          },
-          previousState: {
-            category: prev.category,
-            subcategory: prev.subcategory,
-            priceRange: prev.priceRange,
-            ratingThreshold: prev.ratingThreshold,
-            reviewCountMax: prev.reviewCountMax?.toString(),
-            bsrRange: prev.bsrRange ? [prev.bsrRange[0].toString(), prev.bsrRange[1].toString()] : undefined,
-          },
-          newState: {
-            category: newFilters.category,
-            subcategory: newFilters.subcategory,
-            priceRange: newFilters.priceRange,
-            ratingThreshold: newFilters.ratingThreshold,
-            reviewCountMax: newFilters.reviewCountMax?.toString(),
-            bsrRange: newFilters.bsrRange ? [newFilters.bsrRange[0].toString(), newFilters.bsrRange[1].toString()] : undefined,
-          },
-        });
-      }
-      
-      return newFilters;
-    });
+  const hasActiveFilters = 
+    filters.category !== '' ||
+    filters.subcategory !== '' ||
+    filters.priceMin !== '' ||
+    filters.priceMax !== '' ||
+    filters.ratingThreshold !== '' ||
+    filters.reviewCountMax !== '' ||
+    filters.bsrMin !== '' ||
+    filters.bsrMax !== '' ||
+    filters.monthlyRevenueMin !== '' ||
+    filters.monthlyRevenueMax !== '' ||
+    filters.lightweightPreference ||
+    filters.nonBrandedFriendly ||
+    filters.lowFBACount ||
+    filters.highReviewGrowth ||
+    filters.highMarginThreshold;
+
+  const getBackendFilters = () => {
+    const priceMin = safeParseNumber(filters.priceMin);
+    const priceMax = safeParseNumber(filters.priceMax);
+    const bsrMin = safeParseBigInt(filters.bsrMin);
+    const bsrMax = safeParseBigInt(filters.bsrMax);
+    const revenueMin = safeParseNumber(filters.monthlyRevenueMin);
+    const revenueMax = safeParseNumber(filters.monthlyRevenueMax);
+    const reviewMax = safeParseBigInt(filters.reviewCountMax);
+
+    return {
+      category: filters.category || undefined,
+      subcategory: filters.subcategory || undefined,
+      priceRange: priceMin !== undefined && priceMax !== undefined ? [priceMin, priceMax] as [number, number] : undefined,
+      ratingThreshold: safeParseNumber(filters.ratingThreshold),
+      reviewCountMax: reviewMax,
+      bsrRange: bsrMin !== undefined && bsrMax !== undefined ? [bsrMin, bsrMax] as [bigint, bigint] : undefined,
+      monthlyRevenueRange: revenueMin !== undefined && revenueMax !== undefined ? [revenueMin, revenueMax] as [number, number] : undefined,
+      lightweightPreference: filters.lightweightPreference,
+      nonBrandedFriendly: filters.nonBrandedFriendly,
+      lowFBACount: filters.lowFBACount,
+      highReviewGrowth: filters.highReviewGrowth,
+      highMarginThreshold: filters.highMarginThreshold,
+    };
   };
 
   const resetFilters = () => {
-    console.log('🔄 useProductFilters - Resetting all filters to default');
     setFilters(defaultFilters);
-    sessionStorage.removeItem(STORAGE_KEY);
-  };
-
-  const hasActiveFilters = () => {
-    const active = (
-      filters.category !== undefined ||
-      filters.subcategory !== undefined ||
-      filters.priceRange !== undefined ||
-      filters.ratingThreshold !== undefined ||
-      filters.reviewCountMax !== undefined ||
-      filters.bsrRange !== undefined ||
-      filters.monthlyRevenueRange !== undefined ||
-      filters.lightweightPreference ||
-      filters.nonBrandedFriendly ||
-      filters.lowFBACount ||
-      filters.highReviewGrowth ||
-      filters.highMarginThreshold
-    );
-    
-    if (import.meta.env.DEV) {
-      console.log('🔍 useProductFilters - hasActiveFilters check:', {
-        result: active,
-        activeFilters: {
-          category: !!filters.category,
-          subcategory: !!filters.subcategory,
-          priceRange: !!filters.priceRange,
-          ratingThreshold: filters.ratingThreshold !== undefined,
-          reviewCountMax: filters.reviewCountMax !== undefined,
-          bsrRange: !!filters.bsrRange,
-          monthlyRevenueRange: !!filters.monthlyRevenueRange,
-          lightweightPreference: filters.lightweightPreference,
-          nonBrandedFriendly: filters.nonBrandedFriendly,
-          lowFBACount: filters.lowFBACount,
-          highReviewGrowth: filters.highReviewGrowth,
-          highMarginThreshold: filters.highMarginThreshold,
-        },
-      });
-    }
-    
-    return active;
+    sessionStorage.removeItem('productFilters');
   };
 
   return {
     filters,
-    updateFilters,
+    setFilters,
+    hasActiveFilters,
+    getBackendFilters,
     resetFilters,
-    hasActiveFilters: hasActiveFilters(),
   };
 }

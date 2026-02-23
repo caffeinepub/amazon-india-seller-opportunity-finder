@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 11,
+  "projectStateVersion": 25,
   "summary": "Amazon India Seller Opportunity Finder - a full-stack web application for identifying high-demand, low-competition, high-margin products on Amazon.in with real-time data analysis, opportunity scoring, profit calculations, and trend detection across all Amazon India categories",
   "architectural_notes": [
     "React/Next.js frontend with Tailwind CSS and Chart.js for visualization",
@@ -12,7 +12,8 @@
     "India-specific business logic for GST, fees, and buying behavior"
   ],
   "known_issues": [
-    "Filter functionality triggers 'Something went wrong!' error message instead of returning products - requires proper error handling and backend search logic fixes"
+    "ProductGrid component not displaying any products regardless of filter state - no results shown with or without filters applied",
+    "Version 11: No products are displayed on the filter page even though the serialization error is resolved - ProductGrid shows no results"
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -231,6 +232,246 @@
         "REQ-35"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-remove-the-tiktok-analytics-script-tag-analytics-tiktok-com-from-frontend-index-html-that-is-causing-err-connection-timed-out-errors-and-preventing-the-application-from-loading",
+      "title": "Remove the TikTok analytics script tag (analytics.tiktok.com) from frontend/index.html that is causing ERR_CONNECTION_TIMED_OUT errors and preventing the application from loading",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-frontend-index-html-contains-no-other-external-third-party-analytics-or-tracking-scripts-that-could-cause-similar-loading-failures",
+      "title": "Verify frontend/index.html contains no other external third-party analytics or tracking scripts that could cause similar loading failures",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-error-boundaries-around-external-script-loading-to-prevent-future-third-party-script-failures-from-crashing-the-entire-application",
+      "title": "Add error boundaries around external script loading to prevent future third-party script failures from crashing the entire application",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-bigint-values-reviewcountmax-bsrrange-to-number-type-before-sending-to-backend-in-the-searchproducts-mutation-in-frontend-src-hooks-usequeries-ts-to-resolve-the-do-not-know-how-to-serialize-a-bigint-error",
+      "title": "Convert BigInt values (reviewCountMax, bsrRange) to Number type before sending to backend in the searchProducts mutation in frontend/src/hooks/useQueries.ts to resolve the 'Do not know how to serialize a BigInt' error",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-useproductfilters-hook-in-frontend-src-hooks-useproductfilters-ts-to-store-and-manage-reviewcountmax-and-bsrrange-as-number-type-instead-of-bigint-to-prevent-serialization-issues-throughout-the-application",
+      "title": "Update the useProductFilters hook in frontend/src/hooks/useProductFilters.ts to store and manage reviewCountMax and bsrRange as Number type instead of BigInt to prevent serialization issues throughout the application",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-error-boundary-protection-in-frontend-src-hooks-usequeries-ts-to-catch-and-log-bigint-serialization-errors-with-specific-troubleshooting-guidance-before-they-crash-the-application",
+      "title": "Add error boundary protection in frontend/src/hooks/useQueries.ts to catch and log BigInt serialization errors with specific troubleshooting guidance before they crash the application",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-audit-all-filter-state-initialization-and-updates-in-frontend-src-hooks-useproductfilters-ts-to-identify-where-bigint-values-are-still-being-created-or-stored-and-ensure-all-numeric-filter-values-reviewcountmax-bsrrange-min-bsrrange-max-monthlyrevenuerange-min-monthlyrevenuerange-max-are-explicitly-typed-and-handled-as-number-throughout-the-hook-s-lifecycle",
+      "title": "Audit all filter state initialization and updates in frontend/src/hooks/useProductFilters.ts to identify where BigInt values are still being created or stored, and ensure all numeric filter values (reviewCountMax, bsrRange.min, bsrRange.max, monthlyRevenueRange.min, monthlyRevenueRange.max) are explicitly typed and handled as Number throughout the hook's lifecycle",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-explicit-number-type-conversion-guards-in-the-advancedfilters-component-in-frontend-src-components-advancedfilters-tsx-for-all-numeric-input-values-before-they-are-passed-to-the-filter-state-update-functions-ensuring-input-values-from-number-fields-are-coerced-to-number-type",
+      "title": "Add explicit Number() type conversion guards in the AdvancedFilters component in frontend/src/components/AdvancedFilters.tsx for all numeric input values before they are passed to the filter state update functions, ensuring input values from number fields are coerced to Number type",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-trace-and-fix-the-bigint-creation-source-by-adding-pre-serialization-validation-in-the-searchproducts-mutation-in-frontend-src-hooks-usequeries-ts-that-checks-filter-parameter-types-and-logs-detailed-type-information-typeof-constructor-name-for-reviewcountmax-and-all-bsrrange-monthlyrevenuerange-fields-immediately-before-the-backend-actor-call",
+      "title": "Trace and fix the BigInt creation source by adding pre-serialization validation in the searchProducts mutation in frontend/src/hooks/useQueries.ts that checks filter parameter types and logs detailed type information (typeof, constructor.name) for reviewCountMax and all bsrRange/monthlyRevenueRange fields immediately before the backend actor call",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-defensive-number-conversion-wrapper-immediately-before-the-actor-searchproducts-call-in-frontend-src-hooks-usequeries-ts-that-explicitly-converts-all-numeric-fields-in-the-filter-object-reviewcountmax-bsrrange-min-bsrrange-max-monthlyrevenuerange-min-monthlyrevenuerange-max-to-number-type-as-a-final-safeguard",
+      "title": "Add defensive Number conversion wrapper immediately before the actor.searchProducts() call in frontend/src/hooks/useQueries.ts that explicitly converts all numeric fields in the filter object (reviewCountMax, bsrRange.min, bsrRange.max, monthlyRevenueRange.min, monthlyRevenueRange.max) to Number type as a final safeguard",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-search-the-entire-frontend-codebase-for-any-bigint-literal-syntax-e-g-200n-5000n-or-bigint-constructor-calls-and-replace-them-with-regular-number-literals-or-number-conversions-to-eliminate-any-remaining-bigint-creation-points",
+      "title": "Search the entire frontend codebase for any BigInt literal syntax (e.g., 200n, 5000n) or BigInt() constructor calls and replace them with regular Number literals or Number() conversions to eliminate any remaining BigInt creation points",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-runtime-type-inspection-logging-in-frontend-src-hooks-usequeries-ts-searchproducts-mutation-that-logs-the-exact-typeof-and-constructor-name-for-every-numeric-field-in-the-filters-object-reviewcountmax-bsrrange-min-bsrrange-max-monthlyrevenuerange-min-monthlyrevenuerange-max-pricerange-min-pricerange-max-immediately-before-the-actor-searchproducts-call-and-add-a-recursive-object-inspector-that-traverses-the-entire-filters-object-to-detect-any-bigint-values-anywhere-in-the-structure",
+      "title": "Add runtime type inspection logging in frontend/src/hooks/useQueries.ts searchProducts mutation that logs the exact typeof and constructor.name for every numeric field in the filters object (reviewCountMax, bsrRange.min, bsrRange.max, monthlyRevenueRange.min, monthlyRevenueRange.max, priceRange.min, priceRange.max) immediately before the actor.searchProducts() call, and add a recursive object inspector that traverses the entire filters object to detect any BigInt values anywhere in the structure",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-sanitization-function-in-frontend-src-hooks-usequeries-ts-that-recursively-walks-the-entire-filters-object-structure-and-forcefully-converts-any-bigint-values-to-number-then-apply-this-sanitization-immediately-before-actor-searchproducts-to-create-a-guaranteed-bigint-free-copy-of-the-filters",
+      "title": "Add a sanitization function in frontend/src/hooks/useQueries.ts that recursively walks the entire filters object structure and forcefully converts any BigInt values to Number, then apply this sanitization immediately before actor.searchProducts() to create a guaranteed BigInt-free copy of the filters",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-inspect-the-getbackendfilters-function-in-frontend-src-pages-dashboard-tsx-that-converts-number-to-bigint-and-verify-it-is-not-being-called-or-referenced-anywhere-in-the-filter-application-flow-as-this-may-be-the-source-of-bigint-values-being-reintroduced-into-the-filters",
+      "title": "Inspect the getBackendFilters() function in frontend/src/pages/Dashboard.tsx that converts Number to BigInt and verify it is not being called or referenced anywhere in the filter application flow, as this may be the source of BigInt values being reintroduced into the filters",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-json-stringify-pre-flight-test-in-frontend-src-hooks-usequeries-ts-immediately-before-the-actor-searchproducts-call-that-attempts-to-serialize-the-filters-object-and-catches-any-serialization-errors-logging-the-exact-field-and-value-that-caused-the-failure-with-detailed-error-information",
+      "title": "Add a JSON.stringify() pre-flight test in frontend/src/hooks/useQueries.ts immediately before the actor.searchProducts() call that attempts to serialize the filters object and catches any serialization errors, logging the exact field and value that caused the failure with detailed error information",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-review-the-session-storage-persistence-logic-in-frontend-src-hooks-useproductfilters-ts-to-verify-that-stored-filter-values-are-not-being-deserialized-as-bigint-when-read-from-session-storage-and-add-explicit-number-conversion-when-loading-filters-from-storage",
+      "title": "Review the session storage persistence logic in frontend/src/hooks/useProductFilters.ts to verify that stored filter values are not being deserialized as BigInt when read from session storage, and add explicit Number() conversion when loading filters from storage",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-the-searchproducts-query-in-frontend-src-hooks-usequeries-ts-to-verify-it-successfully-fetches-products-from-the-backend-logging-the-query-status-loading-success-error-response-data-structure-and-product-count-returned",
+      "title": "Debug the searchProducts query in frontend/src/hooks/useQueries.ts to verify it successfully fetches products from the backend, logging the query status (loading, success, error), response data structure, and product count returned",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-productgrid-component-in-frontend-src-components-productgrid-tsx-to-correctly-render-products-from-the-searchproducts-query-result-verifying-the-data-path-from-query-response-to-the-map-function-that-renders-productcard-components",
+      "title": "Fix the ProductGrid component in frontend/src/components/ProductGrid.tsx to correctly render products from the searchProducts query result, verifying the data path from query response to the map function that renders ProductCard components",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-debugging-logs-in-productgrid-component-in-frontend-src-components-productgrid-tsx-at-render-time-showing-query-isloading-state-query-iserror-state-query-data-structure-products-array-length-and-first-product-object-if-available",
+      "title": "Add comprehensive debugging logs in ProductGrid component in frontend/src/components/ProductGrid.tsx at render time showing: query.isLoading state, query.isError state, query.data structure, products array length, and first product object if available",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-test-the-complete-data-flow-by-temporarily-hardcoding-a-simple-filter-free-searchproducts-call-in-productgrid-component-bypassing-the-filter-system-entirely-to-isolate-whether-the-issue-is-with-filtering-logic-or-core-data-fetching",
+      "title": "Test the complete data flow by temporarily hardcoding a simple filter-free searchProducts call in ProductGrid component, bypassing the filter system entirely, to isolate whether the issue is with filtering logic or core data fetching",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-serialization-error-cannot-serialize-filter-fields-reviewcountmax-bsrrange-displayed-on-the-filter-page-by-ensuring-all-numeric-filter-fields-reviewcountmax-bsrrange-min-bsrrange-max-monthlyrevenuerange-values-are-serialized-as-number-type-not-bigint-throughout-the-entire-data-flow-from-advancedfilters-component-through-useproductfilters-hook-to-usequeries-searchproducts-mutation",
+      "title": "Fix the serialization error 'Cannot serialize filter fields: reviewCountMax, bsrRange' displayed on the filter page by ensuring all numeric filter fields (reviewCountMax, bsrRange.min, bsrRange.max, monthlyRevenueRange values) are serialized as Number type, not BigInt, throughout the entire data flow from AdvancedFilters component through useProductFilters hook to useQueries searchProducts mutation",
+      "reqIds": [
+        "REQ-59"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-pre-submission-validation-in-the-advancedfilters-component-s-apply-button-handler-that-checks-all-numeric-inputs-max-reviews-300-bsr-15-2000-revenue-70000-500000-and-explicitly-converts-them-to-number-type-before-updating-the-filter-state-preventing-any-bigint-or-string-values-from-entering-the-filter-pipeline",
+      "title": "Add pre-submission validation in the AdvancedFilters component's Apply button handler that checks all numeric inputs (Max Reviews: 300, BSR: 15-2000, Revenue: ₹70000-₹500000) and explicitly converts them to Number type before updating the filter state, preventing any BigInt or string values from entering the filter pipeline",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-inspect-and-fix-the-data-type-handling-in-the-useproductfilters-hook-s-session-storage-deserialization-logic-to-ensure-that-when-filter-values-are-loaded-from-sessionstorage-all-numeric-fields-reviewcountmax-bsrrange-min-bsrrange-max-monthlyrevenuerange-min-monthlyrevenuerange-max-are-explicitly-parsed-as-number-type-not-bigint",
+      "title": "Inspect and fix the data type handling in the useProductFilters hook's session storage deserialization logic to ensure that when filter values are loaded from sessionStorage, all numeric fields (reviewCountMax, bsrRange.min, bsrRange.max, monthlyRevenueRange.min, monthlyRevenueRange.max) are explicitly parsed as Number type, not BigInt",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-runtime-type-checking-immediately-before-the-searchproducts-actor-call-in-usequeries-ts-that-validates-all-numeric-fields-in-the-filters-object-are-of-type-number-not-bigint-or-string-and-if-any-non-number-types-are-detected-log-a-detailed-warning-with-the-field-name-and-type-then-force-convert-to-number-before-proceeding-with-the-actor-call",
+      "title": "Add runtime type checking immediately before the searchProducts actor call in useQueries.ts that validates all numeric fields in the filters object are of type 'number' (not 'bigint' or 'string'), and if any non-number types are detected, log a detailed warning with the field name and type, then force convert to Number before proceeding with the actor call",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-error-display-on-the-filter-page-to-show-recovery-options-retry-button-and-clear-filters-button-as-shown-in-image-4-png-are-working-and-verify-these-buttons-successfully-reset-the-filter-state-and-allow-users-to-recover-from-the-serialization-error-without-requiring-a-full-page-refresh",
+      "title": "Update the error display on the filter page to show recovery options (Retry button and Clear Filters button as shown in image-4.png are working) and verify these buttons successfully reset the filter state and allow users to recover from the serialization error without requiring a full page refresh",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-console-logging-in-frontend-src-components-productgrid-tsx-at-component-render-to-log-query-isloading-boolean-query-iserror-boolean-query-error-object-if-present-query-data-structure-products-array-existence-and-length-and-first-product-object-details-if-array-is-non-empty",
+      "title": "Add comprehensive console logging in frontend/src/components/ProductGrid.tsx at component render to log: query.isLoading boolean, query.isError boolean, query.error object (if present), query.data structure, products array existence and length, and first product object details if array is non-empty",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-the-searchproducts-query-in-frontend-src-hooks-usequeries-ts-is-receiving-a-successful-response-from-the-backend-by-adding-detailed-logging-of-query-execution-start-filter-parameters-being-sent-raw-response-from-actor-searchproducts-response-data-structure-and-any-caught-errors-during-the-query",
+      "title": "Verify the searchProducts query in frontend/src/hooks/useQueries.ts is receiving a successful response from the backend by adding detailed logging of: query execution start, filter parameters being sent, raw response from actor.searchProducts(), response data structure, and any caught errors during the query",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-data-path-in-frontend-src-components-productgrid-tsx-to-correctly-extract-the-products-array-from-the-searchproducts-query-response-verifying-the-response-structure-matches-what-the-component-expects-e-g-query-data-vs-query-data-products-vs-query-data-ok-with-nested-products-array",
+      "title": "Fix the data path in frontend/src/components/ProductGrid.tsx to correctly extract the products array from the searchProducts query response, verifying the response structure matches what the component expects (e.g., query.data vs query.data.products vs query.data.ok with nested products array)",
+      "reqIds": [
+        "REQ-67"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-temporary-hardcoded-test-in-frontend-src-components-productgrid-tsx-that-bypasses-the-searchproducts-query-entirely-and-renders-a-static-array-of-3-mock-products-to-isolate-whether-the-issue-is-with-data-fetching-or-rendering-logic",
+      "title": "Add a temporary hardcoded test in frontend/src/components/ProductGrid.tsx that bypasses the searchProducts query entirely and renders a static array of 3 mock products to isolate whether the issue is with data fetching or rendering logic",
+      "reqIds": [
+        "REQ-68"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-default-fallback-product-data-directly-in-frontend-src-hooks-usequeries-ts-searchproducts-query-that-returns-at-least-5-mock-products-if-the-backend-call-fails-or-returns-empty-results-allowing-the-ui-to-display-sample-data-for-testing",
+      "title": "Add default/fallback product data directly in frontend/src/hooks/useQueries.ts searchProducts query that returns at least 5 mock products if the backend call fails or returns empty results, allowing the UI to display sample data for testing",
+      "reqIds": [
+        "REQ-70"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -367,6 +608,52 @@
       "summary": "Verify that the backend searchProducts method in backend/main.mo returns a valid response structure even when no filters are applied, ensuring the default case returns all products without errors",
       "reqIds": [
         "REQ-34"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Fix the product display issue where no results are shown in the ProductGrid component whether filters are applied or not - investigate searchProducts query, data fetching, and rendering logic in frontend/src/components/ProductGrid.tsx and frontend/src/hooks/useQueries.ts",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-40",
+      "summary": "Verify the backend searchProducts method in backend/main.mo returns sample products when called without filters, ensuring the method has mock/seed data available and returns it in the correct response format expected by the frontend",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Verify the useActor hook in frontend/src/hooks/useActor.ts successfully initializes the backend actor and that actor.searchProducts is a callable function, adding error handling for actor initialization failures",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-45",
+      "summary": "Check if the backend searchProducts method in backend/main.mo is correctly exported and accessible through the actor interface, verifying the method signature matches what the frontend expects",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "Verify the backend searchProducts method in backend/main.mo contains sample/mock product data that can be returned when called without filters or with minimal filters, ensuring at least 10-20 mock products are available for testing",
+      "reqIds": [
+        "REQ-66"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-51",
+      "summary": "Verify the backend actor initialization in frontend/src/hooks/useActor.ts is successful and that actor.searchProducts exists as a callable function, adding console logging when actor is created/changed and explicit error handling if actor or searchProducts method is undefined",
+      "reqIds": [
+        "REQ-69"
       ],
       "status": "pending"
     }

@@ -1,12 +1,15 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the "Something went wrong!" error appearing in the draft preview and improve error handling throughout the application.
+**Goal:** Debug and fix the ProductGrid component to display search results after resolving the filter error.
 
 **Planned changes:**
-- Investigate and resolve the root cause of the "Something went wrong!" error in ProductGrid component by examining error handling logic, query response handling, and backend searchProducts method
-- Add fallback error recovery with user-friendly error messages and actionable troubleshooting steps instead of generic error message
-- Verify backend searchProducts method returns valid response structure when no filters are applied
-- Add initialization error detection in useActor hook to catch and report backend actor failures
+- Add comprehensive console logging throughout the data flow in ProductGrid.tsx to track query state, data structure, and products array
+- Add detailed logging in useQueries.ts searchProducts query to verify filter parameters, backend responses, and error handling
+- Verify backend main.mo contains mock product data (10-20 products) for testing
+- Fix the data path extraction in ProductGrid.tsx to correctly handle the searchProducts response structure
+- Add temporary hardcoded test with 3 static mock products to isolate rendering vs fetching issues
+- Verify backend actor initialization in useActor.ts and log actor.searchProducts availability
+- Add fallback mock data (5 products) in useQueries.ts searchProducts query for when backend returns empty results
 
-**User-visible outcome:** The draft preview loads successfully without errors, and if errors do occur, users see specific, actionable error messages with retry options instead of a generic "Something went wrong!" message.
+**User-visible outcome:** The ProductGrid successfully displays product results when filters are applied, with detailed console logging to diagnose any remaining issues in the data flow from backend to frontend rendering.

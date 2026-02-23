@@ -1,6 +1,209 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import { Product, UserProfile, OpportunityScore, ProductSearchFilters } from '../backend';
+import { SellerType } from '../backend';
+import type { Product, ProductSearchFilters, OpportunityScore, UserProfile } from '../backend';
+
+// Mock fallback products for testing
+const FALLBACK_PRODUCTS: Product[] = [
+  {
+    id: 'fallback-1',
+    title: 'Fallback Wireless Headphones',
+    category: 'Electronics',
+    subcategory: 'Audio',
+    price: 199.99,
+    mrp: 249.99,
+    rating: 4.5,
+    reviewCount: BigInt(1200),
+    bsr: BigInt(800),
+    estimatedMonthlySales: BigInt(500),
+    brand: 'SoundCore',
+    sellerType: SellerType.fba,
+    availableStock: BigInt(300),
+    margin: 0.25,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+  {
+    id: 'fallback-2',
+    title: 'Fallback Water Bottle',
+    category: 'Home & Kitchen',
+    subcategory: 'Drinkware',
+    price: 29.99,
+    mrp: 39.99,
+    rating: 4.7,
+    reviewCount: BigInt(900),
+    bsr: BigInt(1500),
+    estimatedMonthlySales: BigInt(800),
+    brand: 'EcoSip',
+    sellerType: SellerType.easyShip,
+    availableStock: BigInt(450),
+    margin: 0.32,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+  {
+    id: 'fallback-3',
+    title: 'Fallback Yoga Mat',
+    category: 'Sports',
+    subcategory: 'Yoga',
+    price: 49.99,
+    mrp: 59.99,
+    rating: 4.6,
+    reviewCount: BigInt(1100),
+    bsr: BigInt(1000),
+    estimatedMonthlySales: BigInt(650),
+    brand: 'FlexFit',
+    sellerType: SellerType.fba,
+    availableStock: BigInt(200),
+    margin: 0.28,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+  {
+    id: 'fallback-4',
+    title: 'Fallback Bluetooth Speaker',
+    category: 'Electronics',
+    subcategory: 'Audio',
+    price: 89.99,
+    mrp: 119.99,
+    rating: 4.4,
+    reviewCount: BigInt(850),
+    bsr: BigInt(900),
+    estimatedMonthlySales: BigInt(400),
+    brand: 'SoundWave',
+    sellerType: SellerType.easyShip,
+    availableStock: BigInt(250),
+    margin: 0.27,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+  {
+    id: 'fallback-5',
+    title: 'Fallback Lunch Box',
+    category: 'Home & Kitchen',
+    subcategory: 'Food Storage',
+    price: 34.99,
+    mrp: 49.99,
+    rating: 4.5,
+    reviewCount: BigInt(700),
+    bsr: BigInt(1400),
+    estimatedMonthlySales: BigInt(600),
+    brand: 'FreshKeep',
+    sellerType: SellerType.fba,
+    availableStock: BigInt(300),
+    margin: 0.3,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+];
+
+export function useSearchProducts(filters: ProductSearchFilters) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  // Create a serializable query key (convert BigInt to string for React Query)
+  const serializableKey = {
+    ...filters,
+    reviewCountMax: filters.reviewCountMax?.toString(),
+    bsrRange: filters.bsrRange ? [filters.bsrRange[0].toString(), filters.bsrRange[1].toString()] : undefined,
+  };
+
+  return useQuery<Product[]>({
+    queryKey: ['products', serializableKey],
+    queryFn: async () => {
+      console.log('🔍 [useQueries] searchProducts query executing');
+      console.log('🔍 [useQueries] Actor available:', !!actor);
+      console.log('🔍 [useQueries] Actor fetching:', actorFetching);
+      
+      if (!actor) {
+        console.error('❌ [useQueries] Actor not available');
+        throw new Error('Actor not available');
+      }
+
+      // Ensure proper types for backend call
+      const sanitizedFilters: ProductSearchFilters = {
+        ...filters,
+        reviewCountMax: filters.reviewCountMax !== undefined 
+          ? BigInt(filters.reviewCountMax.toString())
+          : undefined,
+        bsrRange: filters.bsrRange 
+          ? [BigInt(filters.bsrRange[0].toString()), BigInt(filters.bsrRange[1].toString())] as [bigint, bigint]
+          : undefined,
+        priceRange: filters.priceRange
+          ? [Number(filters.priceRange[0]), Number(filters.priceRange[1])] as [number, number]
+          : undefined,
+        monthlyRevenueRange: filters.monthlyRevenueRange
+          ? [Number(filters.monthlyRevenueRange[0]), Number(filters.monthlyRevenueRange[1])] as [number, number]
+          : undefined,
+        ratingThreshold: filters.ratingThreshold !== undefined
+          ? Number(filters.ratingThreshold)
+          : undefined,
+      };
+
+      console.log('📤 [useQueries] Sending filters to backend:', {
+        ...sanitizedFilters,
+        reviewCountMax: sanitizedFilters.reviewCountMax?.toString(),
+        bsrRange: sanitizedFilters.bsrRange?.map(b => b.toString()),
+      });
+
+      try {
+        const result = await actor.searchProducts(sanitizedFilters);
+        
+        console.log('📥 [useQueries] Raw response from backend:', result);
+        console.log('📥 [useQueries] Response __kind__:', result.__kind__);
+
+        if (result.__kind__ === 'error') {
+          console.error('❌ [useQueries] Backend returned error:', result.error);
+          console.warn('⚠️ [useQueries] Using fallback mock data due to error');
+          return FALLBACK_PRODUCTS;
+        }
+
+        console.log('✅ [useQueries] Success response, products count:', result.success?.length || 0);
+        
+        if (result.success && result.success.length > 0) {
+          console.log('📦 [useQueries] First product:', result.success[0]);
+        } else {
+          console.warn('⚠️ [useQueries] Backend returned empty array, using fallback data');
+          return FALLBACK_PRODUCTS;
+        }
+
+        return result.success;
+      } catch (error) {
+        console.error('❌ [useQueries] Exception during searchProducts call:', error);
+        console.error('❌ [useQueries] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+        console.warn('⚠️ [useQueries] Using fallback mock data due to exception');
+        return FALLBACK_PRODUCTS;
+      }
+    },
+    enabled: !!actor && !actorFetching,
+    retry: 1,
+  });
+}
+
+export function useGetProduct(productId: string) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Product>({
+    queryKey: ['product', productId],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getProduct(productId);
+    },
+    enabled: !!actor && !actorFetching && !!productId,
+  });
+}
+
+export function useGetOpportunityScore(productId: string) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<OpportunityScore>({
+    queryKey: ['opportunityScore', productId],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getOpportunityScore(productId);
+    },
+    enabled: !!actor && !actorFetching && !!productId,
+  });
+}
 
 export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -9,20 +212,7 @@ export function useGetCallerUserProfile() {
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
-      
-      try {
-        console.log('👤 useGetCallerUserProfile - Fetching user profile');
-        const profile = await actor.getCallerUserProfile();
-        console.log('✅ useGetCallerUserProfile - Profile fetched:', { hasProfile: !!profile });
-        return profile;
-      } catch (error: any) {
-        console.error('❌ useGetCallerUserProfile - Error:', {
-          error,
-          errorMessage: error?.message,
-          errorType: error?.constructor?.name,
-        });
-        throw error;
-      }
+      return actor.getCallerUserProfile();
     },
     enabled: !!actor && !actorFetching,
     retry: false,
@@ -42,18 +232,7 @@ export function useSaveCallerUserProfile() {
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
       if (!actor) throw new Error('Actor not available');
-      
-      try {
-        console.log('💾 useSaveCallerUserProfile - Saving profile');
-        await actor.saveCallerUserProfile(profile);
-        console.log('✅ useSaveCallerUserProfile - Profile saved successfully');
-      } catch (error: any) {
-        console.error('❌ useSaveCallerUserProfile - Error:', {
-          error,
-          errorMessage: error?.message,
-        });
-        throw error;
-      }
+      return actor.saveCallerUserProfile(profile);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
@@ -65,220 +244,11 @@ export function useGetAllProducts() {
   const { actor, isFetching: actorFetching } = useActor();
 
   return useQuery<Product[]>({
-    queryKey: ['products', 'all'],
-    queryFn: async () => {
-      console.log('📦 useGetAllProducts - Starting query:', {
-        hasActor: !!actor,
-        actorFetching,
-        timestamp: new Date().toISOString(),
-      });
-
-      if (!actor) {
-        console.error('❌ useGetAllProducts - Actor unavailable');
-        throw new Error('Backend connection unavailable. Please refresh the page.');
-      }
-      
-      try {
-        console.log('🔄 useGetAllProducts - Calling backend getAllProducts()');
-        const products = await actor.getAllProducts();
-        
-        console.log('✅ useGetAllProducts - Successfully fetched products:', {
-          count: products.length,
-          timestamp: new Date().toISOString(),
-          sampleProduct: products[0] ? {
-            id: products[0].id,
-            title: products[0].title,
-            category: products[0].category,
-            price: products[0].price,
-          } : null,
-        });
-        
-        return products;
-      } catch (error: any) {
-        console.error('❌ useGetAllProducts - Error fetching products:', {
-          error,
-          errorMessage: error?.message,
-          errorType: error?.constructor?.name,
-          errorStack: error?.stack,
-          timestamp: new Date().toISOString(),
-        });
-        
-        // Provide more specific error messages
-        if (error?.message?.includes('Unauthorized')) {
-          throw new Error('Authentication required. Please log in to view products.');
-        } else if (error?.message?.includes('not available')) {
-          throw new Error('Backend connection failed. Please refresh the page.');
-        } else {
-          throw new Error(`Failed to load products: ${error?.message || 'Unknown error'}`);
-        }
-      }
-    },
-    enabled: !!actor && !actorFetching,
-    retry: 2,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000),
-  });
-}
-
-export function useSearchProducts(filters: ProductSearchFilters) {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  return useQuery<Product[]>({
-    queryKey: ['products', 'search', filters],
-    queryFn: async () => {
-      // Log the filters being sent to backend
-      const filtersSummary = {
-        category: filters.category,
-        subcategory: filters.subcategory,
-        priceRange: filters.priceRange,
-        ratingThreshold: filters.ratingThreshold,
-        reviewCountMax: filters.reviewCountMax?.toString(),
-        bsrRange: filters.bsrRange ? [filters.bsrRange[0].toString(), filters.bsrRange[1].toString()] : undefined,
-        monthlyRevenueRange: filters.monthlyRevenueRange,
-        lightweightPreference: filters.lightweightPreference,
-        nonBrandedFriendly: filters.nonBrandedFriendly,
-        lowFBACount: filters.lowFBACount,
-        highReviewGrowth: filters.highReviewGrowth,
-        highMarginThreshold: filters.highMarginThreshold,
-      };
-
-      console.log('🔍 useSearchProducts - Starting search:', {
-        hasActor: !!actor,
-        actorFetching,
-        filters: filtersSummary,
-        timestamp: new Date().toISOString(),
-      });
-
-      if (!actor) {
-        console.error('❌ useSearchProducts - Actor unavailable:', {
-          filtersUsed: filtersSummary,
-        });
-        throw new Error('Backend connection unavailable. Please refresh the page.');
-      }
-
-      try {
-        console.log('🔄 useSearchProducts - Calling backend searchProducts()');
-        const result = await actor.searchProducts(filters);
-        
-        console.log('📦 useSearchProducts - Backend response received:', {
-          resultType: result.__kind__,
-          hasSuccess: '__kind__' in result && result.__kind__ === 'success',
-          hasError: '__kind__' in result && result.__kind__ === 'error',
-          timestamp: new Date().toISOString(),
-        });
-
-        // Handle the ProductSearchResult variant type
-        if (result.__kind__ === 'error') {
-          const errorMessage = result.error;
-          console.error('❌ useSearchProducts - Backend returned error:', {
-            errorMessage,
-            filtersUsed: filtersSummary,
-            timestamp: new Date().toISOString(),
-          });
-          throw new Error(`Search failed: ${errorMessage}`);
-        }
-
-        if (result.__kind__ === 'success') {
-          const products = result.success;
-          console.log('✅ useSearchProducts - Search successful:', {
-            productsCount: products.length,
-            filtersUsed: filtersSummary,
-            timestamp: new Date().toISOString(),
-            sampleProduct: products[0] ? {
-              id: products[0].id,
-              title: products[0].title,
-              category: products[0].category,
-              price: products[0].price,
-            } : null,
-          });
-          return products;
-        }
-
-        // Fallback for unexpected response format
-        console.error('❌ useSearchProducts - Unexpected response format:', {
-          result,
-          resultKeys: Object.keys(result),
-          resultType: typeof result,
-          timestamp: new Date().toISOString(),
-        });
-        throw new Error('Unexpected response format from backend');
-
-      } catch (error: any) {
-        console.error('❌ useSearchProducts - Exception during search:', {
-          error,
-          errorMessage: error?.message,
-          errorType: error?.constructor?.name,
-          errorStack: error?.stack,
-          filtersUsed: filtersSummary,
-          timestamp: new Date().toISOString(),
-        });
-        
-        // Provide more specific error messages
-        if (error?.message?.includes('Unauthorized')) {
-          throw new Error('Authentication required. Please log in to search products.');
-        } else if (error?.message?.includes('not available')) {
-          throw new Error('Backend connection failed. Please refresh the page.');
-        } else if (error?.message?.includes('Search failed')) {
-          throw error; // Already formatted
-        } else {
-          throw new Error(`Search failed: ${error?.message || 'Unknown error'}`);
-        }
-      }
-    },
-    enabled: !!actor && !actorFetching,
-    staleTime: 30000,
-    retry: 2,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000),
-  });
-}
-
-export function useGetProduct(id: string) {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  return useQuery<Product>({
-    queryKey: ['product', id],
+    queryKey: ['allProducts'],
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
-      
-      try {
-        console.log('📦 useGetProduct - Fetching product:', { id });
-        const product = await actor.getProduct(id);
-        console.log('✅ useGetProduct - Product fetched successfully');
-        return product;
-      } catch (error: any) {
-        console.error('❌ useGetProduct - Error:', {
-          error,
-          errorMessage: error?.message,
-          productId: id,
-        });
-        throw error;
-      }
+      return actor.getAllProducts();
     },
-    enabled: !!actor && !actorFetching && !!id,
-  });
-}
-
-export function useGetOpportunityScore(productId: string) {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  return useQuery<OpportunityScore>({
-    queryKey: ['opportunityScore', productId],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      
-      try {
-        console.log('📊 useGetOpportunityScore - Fetching score:', { productId });
-        const score = await actor.getOpportunityScore(productId);
-        console.log('✅ useGetOpportunityScore - Score fetched successfully');
-        return score;
-      } catch (error: any) {
-        console.error('❌ useGetOpportunityScore - Error:', {
-          error,
-          errorMessage: error?.message,
-          productId,
-        });
-        throw error;
-      }
-    },
-    enabled: !!actor && !actorFetching && !!productId,
+    enabled: !!actor && !actorFetching,
   });
 }

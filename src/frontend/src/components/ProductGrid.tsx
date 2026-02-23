@@ -1,254 +1,258 @@
-import { useState } from 'react';
-import { Product } from '../backend';
-import ProductCard from './ProductCard';
-import ProductSortControls from './ProductSortControls';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Info, AlertTriangle, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
+import React from 'react';
+import { useSearchProducts } from '../hooks/useQueries';
 import { useProductFilters } from '../hooks/useProductFilters';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import ProductCard from './ProductCard';
+import LoadingStates from './LoadingStates';
+import { Button } from '@/components/ui/button';
+import { AlertCircle, RefreshCw, X } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { SellerType } from '../backend';
+import type { Product } from '../backend';
 
-interface ProductGridProps {
-  products: Product[];
-  isLoading?: boolean;
-  error?: Error | null;
-  onRetry?: () => void;
-}
+// TEST MODE - Set to true to bypass backend and use hardcoded data
+const TEST_MODE = false;
 
-export default function ProductGrid({ products, isLoading = false, error = null, onRetry }: ProductGridProps) {
-  const [sortBy, setSortBy] = useState<'score' | 'revenue' | 'competition' | 'growth'>('score');
-  const { filters, hasActiveFilters } = useProductFilters();
-  const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
+const MOCK_PRODUCTS: Product[] = [
+  {
+    id: 'test-1',
+    title: 'Test Wireless Headphones',
+    category: 'Electronics',
+    subcategory: 'Audio',
+    price: 199.99,
+    mrp: 249.99,
+    rating: 4.5,
+    reviewCount: BigInt(1200),
+    bsr: BigInt(800),
+    estimatedMonthlySales: BigInt(500),
+    brand: 'TestBrand',
+    sellerType: SellerType.fba,
+    availableStock: BigInt(300),
+    margin: 0.25,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+  {
+    id: 'test-2',
+    title: 'Test Water Bottle',
+    category: 'Home & Kitchen',
+    subcategory: 'Drinkware',
+    price: 29.99,
+    mrp: 39.99,
+    rating: 4.7,
+    reviewCount: BigInt(900),
+    bsr: BigInt(1500),
+    estimatedMonthlySales: BigInt(800),
+    brand: 'TestBrand',
+    sellerType: SellerType.easyShip,
+    availableStock: BigInt(450),
+    margin: 0.32,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+  {
+    id: 'test-3',
+    title: 'Test Yoga Mat',
+    category: 'Sports',
+    subcategory: 'Yoga',
+    price: 49.99,
+    mrp: 59.99,
+    rating: 4.6,
+    reviewCount: BigInt(1100),
+    bsr: BigInt(1000),
+    estimatedMonthlySales: BigInt(650),
+    brand: 'TestBrand',
+    sellerType: SellerType.fba,
+    availableStock: BigInt(200),
+    margin: 0.28,
+    lastModified: BigInt(Date.now() * 1000000),
+    images: [],
+  },
+];
 
-  // Log rendering state
-  if (import.meta.env.DEV) {
-    console.log('🎨 ProductGrid render:', {
-      productsCount: products.length,
-      isLoading,
-      hasError: !!error,
-      errorMessage: error?.message,
-      timestamp: new Date().toISOString(),
-    });
+export default function ProductGrid() {
+  const { getBackendFilters, resetFilters, hasActiveFilters, filters } = useProductFilters();
+  const backendFilters = getBackendFilters();
+  const query = useSearchProducts(backendFilters);
+
+  // Comprehensive logging
+  console.log('🎯 [ProductGrid] Component render');
+  console.log('🎯 [ProductGrid] Query state:', {
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    isError: query.isError,
+    isSuccess: query.isSuccess,
+    dataExists: !!query.data,
+  });
+  console.log('🎯 [ProductGrid] Query data:', query.data);
+  console.log('🎯 [ProductGrid] Query error:', query.error);
+  
+  if (query.data) {
+    console.log('🎯 [ProductGrid] Data type:', typeof query.data);
+    console.log('🎯 [ProductGrid] Is array:', Array.isArray(query.data));
+    console.log('🎯 [ProductGrid] Data length:', Array.isArray(query.data) ? query.data.length : 'N/A');
+    if (Array.isArray(query.data) && query.data.length > 0) {
+      console.log('🎯 [ProductGrid] First product:', query.data[0]);
+    }
   }
 
-  // Handle error state with detailed information and recovery options
-  if (error) {
-    const errorDetails = {
-      message: error.message,
-      type: error.constructor?.name || 'Error',
-      stack: error.stack,
-      timestamp: new Date().toISOString(),
-      activeFilters: {
-        category: filters.category,
-        subcategory: filters.subcategory,
-        priceRange: filters.priceRange,
-        ratingThreshold: filters.ratingThreshold,
-        reviewCountMax: filters.reviewCountMax?.toString(),
-        bsrRange: filters.bsrRange ? [filters.bsrRange[0].toString(), filters.bsrRange[1].toString()] : undefined,
-        monthlyRevenueRange: filters.monthlyRevenueRange,
-        lightweightPreference: filters.lightweightPreference,
-        nonBrandedFriendly: filters.nonBrandedFriendly,
-        lowFBACount: filters.lowFBACount,
-        highReviewGrowth: filters.highReviewGrowth,
-        highMarginThreshold: filters.highMarginThreshold,
-      },
-    };
-
-    console.error('❌ ProductGrid - Displaying error state:', errorDetails);
-
-    // Determine error type and provide specific guidance
-    const isAuthError = error.message.includes('Authentication') || error.message.includes('Unauthorized');
-    const isConnectionError = error.message.includes('connection') || error.message.includes('not available');
-    const isBackendError = error.message.includes('Search failed') || error.message.includes('Backend');
-
+  // TEST MODE: Use hardcoded data
+  if (TEST_MODE) {
+    console.log('⚠️ [ProductGrid] TEST MODE ACTIVE - Using mock data');
     return (
       <div className="space-y-4">
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle className="text-lg font-semibold">Error Loading Products</AlertTitle>
-          <AlertDescription className="space-y-4">
-            <p className="font-medium text-base">{error.message}</p>
-            
-            {/* Specific troubleshooting steps based on error type */}
-            <div className="space-y-2">
-              <p className="font-semibold text-sm">Troubleshooting steps:</p>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                {isAuthError && (
-                  <>
-                    <li>Try logging out and logging back in</li>
-                    <li>Clear your browser cache and cookies</li>
-                    <li>Ensure you have the necessary permissions</li>
-                  </>
-                )}
-                {isConnectionError && (
-                  <>
-                    <li>Check your internet connection</li>
-                    <li>Refresh the page to reconnect to the backend</li>
-                    <li>Try again in a few moments</li>
-                  </>
-                )}
-                {isBackendError && (
-                  <>
-                    <li>Try adjusting your filter criteria</li>
-                    <li>Reset all filters and try again</li>
-                    <li>Contact support if the issue persists</li>
-                  </>
-                )}
-                {!isAuthError && !isConnectionError && !isBackendError && (
-                  <>
-                    <li>Refresh the page and try again</li>
-                    <li>Clear your browser cache</li>
-                    <li>Check the browser console (F12) for more details</li>
-                  </>
-                )}
-              </ul>
-            </div>
+        <Alert className="bg-yellow-50 border-yellow-200">
+          <AlertCircle className="h-5 w-5 text-yellow-600" />
+          <AlertTitle className="text-yellow-800">Test Mode Active</AlertTitle>
+          <AlertDescription className="text-yellow-700">
+            Displaying hardcoded test data. Set TEST_MODE to false to use real backend data.
+          </AlertDescription>
+        </Alert>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Showing {MOCK_PRODUCTS.length} test product{MOCK_PRODUCTS.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {MOCK_PRODUCTS.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
-            {/* Retry button */}
-            {onRetry && (
-              <Button 
-                onClick={onRetry} 
-                variant="outline" 
-                size="sm"
-                className="mt-2"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Retry
-              </Button>
+  // Extract products from query data
+  let products: Product[] = [];
+  
+  if (query.data) {
+    console.log('🔍 [ProductGrid] Extracting products from query.data');
+    
+    // Check if data has __kind__ discriminator (ProductSearchResult union type)
+    if (typeof query.data === 'object' && '__kind__' in query.data) {
+      console.log('🔍 [ProductGrid] Data has __kind__ field:', (query.data as any).__kind__);
+      
+      if ((query.data as any).__kind__ === 'success') {
+        products = (query.data as any).success || [];
+        console.log('✅ [ProductGrid] Extracted from success variant, count:', products.length);
+      } else if ((query.data as any).__kind__ === 'error') {
+        console.error('❌ [ProductGrid] Data is error variant:', (query.data as any).error);
+        query.error = new Error((query.data as any).error);
+      }
+    } else if (Array.isArray(query.data)) {
+      // Direct array response
+      products = query.data;
+      console.log('✅ [ProductGrid] Data is direct array, count:', products.length);
+    } else {
+      console.warn('⚠️ [ProductGrid] Unexpected data structure:', query.data);
+    }
+  }
+
+  console.log('🎯 [ProductGrid] Final products array length:', products.length);
+
+  if (query.isLoading) {
+    console.log('⏳ [ProductGrid] Rendering loading state');
+    return <LoadingStates />;
+  }
+
+  if (query.error) {
+    console.log('❌ [ProductGrid] Rendering error state');
+    return (
+      <div className="flex items-center justify-center min-h-[400px] p-8">
+        <Alert variant="destructive" className="max-w-2xl">
+          <AlertCircle className="h-5 w-5" />
+          <AlertTitle className="text-lg font-semibold mb-2">Error Loading Products</AlertTitle>
+          <AlertDescription className="space-y-4">
+            <p className="text-sm">
+              {query.error instanceof Error ? query.error.message : 'An unexpected error occurred'}
+            </p>
+            
+            {hasActiveFilters && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Troubleshooting steps:</p>
+                <ul className="text-sm list-disc list-inside space-y-1 ml-2">
+                  <li>Clear all filters and try again</li>
+                  <li>Refresh the page to reset the application state</li>
+                  <li>Avoid using extremely large numbers in filter inputs</li>
+                </ul>
+              </div>
             )}
 
-            {/* Active filters display */}
             {hasActiveFilters && (
               <div className="mt-3 p-3 bg-background/50 rounded-md border">
                 <p className="font-semibold text-sm mb-2">Active filters:</p>
                 <ul className="list-disc list-inside space-y-1 text-xs">
                   {filters.category && <li>Category: {filters.category}</li>}
-                  {filters.subcategory && <li>Subcategory: {filters.subcategory}</li>}
-                  {filters.priceRange && <li>Price: ₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}</li>}
+                  {filters.priceMin && filters.priceMax && <li>Price: ₹{filters.priceMin} - ₹{filters.priceMax}</li>}
                   {filters.ratingThreshold && <li>Rating: {filters.ratingThreshold}+</li>}
-                  {filters.reviewCountMax && <li>Max Reviews: {filters.reviewCountMax.toString()}</li>}
-                  {filters.bsrRange && <li>BSR: {filters.bsrRange[0].toString()} - {filters.bsrRange[1].toString()}</li>}
-                  {filters.monthlyRevenueRange && <li>Revenue: ₹{filters.monthlyRevenueRange[0]} - ₹{filters.monthlyRevenueRange[1]}</li>}
-                  {filters.lightweightPreference && <li>Lightweight preference enabled</li>}
-                  {filters.nonBrandedFriendly && <li>Non-branded friendly enabled</li>}
-                  {filters.lowFBACount && <li>Low FBA count enabled</li>}
+                  {filters.reviewCountMax && <li>Max Reviews: {filters.reviewCountMax}</li>}
+                  {filters.bsrMin && filters.bsrMax && <li>BSR: {filters.bsrMin} - {filters.bsrMax}</li>}
+                  {filters.monthlyRevenueMin && filters.monthlyRevenueMax && <li>Revenue: ₹{filters.monthlyRevenueMin} - ₹{filters.monthlyRevenueMax}</li>}
                   {filters.highReviewGrowth && <li>High review growth enabled</li>}
                   {filters.highMarginThreshold && <li>High margin threshold enabled</li>}
                 </ul>
               </div>
             )}
 
-            {/* Technical details collapsible */}
-            <Collapsible open={showTechnicalDetails} onOpenChange={setShowTechnicalDetails}>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full justify-between mt-2">
-                  <span className="text-xs">Technical Details</span>
-                  {showTechnicalDetails ? (
-                    <ChevronUp className="h-3 w-3" />
-                  ) : (
-                    <ChevronDown className="h-3 w-3" />
-                  )}
+            <div className="flex gap-2 pt-2">
+              <Button
+                onClick={() => query.refetch()}
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Retry
+              </Button>
+              {hasActiveFilters && (
+                <Button
+                  onClick={resetFilters}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Clear Filters
                 </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-2">
-                <div className="p-3 bg-background/50 rounded-md border text-xs font-mono space-y-2">
-                  <div>
-                    <span className="font-semibold">Error Type:</span> {errorDetails.type}
-                  </div>
-                  <div>
-                    <span className="font-semibold">Timestamp:</span> {errorDetails.timestamp}
-                  </div>
-                  {errorDetails.stack && (
-                    <div>
-                      <span className="font-semibold">Stack Trace:</span>
-                      <pre className="mt-1 text-[10px] overflow-x-auto whitespace-pre-wrap break-words">
-                        {errorDetails.stack}
-                      </pre>
-                    </div>
-                  )}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-
-            <p className="text-xs mt-3 opacity-70">
-              💡 Tip: Open the browser console (F12) for detailed debugging information
-            </p>
+              )}
+            </div>
           </AlertDescription>
         </Alert>
       </div>
     );
   }
 
-  // Products are already filtered by the backend via useSearchProducts
-  let sortedProducts: Product[] = [];
-  
-  try {
-    sortedProducts = [...products].sort((a, b) => {
-      switch (sortBy) {
-        case 'revenue':
-          return (b.price * Number(b.estimatedMonthlySales)) - (a.price * Number(a.estimatedMonthlySales));
-        case 'competition':
-          return Number(a.reviewCount) - Number(b.reviewCount);
-        case 'growth':
-          return Number(b.estimatedMonthlySales) - Number(a.estimatedMonthlySales);
-        default:
-          return b.margin - a.margin;
-      }
-    });
-
-    if (import.meta.env.DEV) {
-      console.log('✅ ProductGrid - Products sorted:', {
-        sortBy,
-        count: sortedProducts.length,
-        timestamp: new Date().toISOString(),
-      });
-    }
-  } catch (sortError: any) {
-    console.error('❌ ProductGrid - Error sorting products:', {
-      sortError,
-      errorMessage: sortError?.message,
-      productsCount: products.length,
-      sortBy,
-      timestamp: new Date().toISOString(),
-    });
-    // Fallback to unsorted products
-    sortedProducts = products;
-  }
-
-  if (isLoading) {
-    console.log('⏳ ProductGrid - Showing loading state');
+  if (!products || products.length === 0) {
+    console.log('📭 [ProductGrid] Rendering empty state');
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center space-y-2">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Loading products...</p>
+      <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
+        <div className="max-w-md space-y-4">
+          <h3 className="text-xl font-semibold text-muted-foreground">No Products Found</h3>
+          <p className="text-sm text-muted-foreground">
+            {hasActiveFilters
+              ? 'Try adjusting your filters to see more results.'
+              : 'No products are currently available.'}
+          </p>
+          {hasActiveFilters && (
+            <Button onClick={resetFilters} variant="outline" className="gap-2">
+              <X className="h-4 w-4" />
+              Clear All Filters
+            </Button>
+          )}
         </div>
       </div>
     );
   }
 
-  if (sortedProducts.length === 0) {
-    console.log('ℹ️ ProductGrid - No products to display');
-    return (
-      <Alert>
-        <Info className="h-4 w-4" />
-        <AlertDescription>
-          No products found matching your filters. Try adjusting your filter criteria or reset filters to see all products.
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
+  console.log('✅ [ProductGrid] Rendering products grid with', products.length, 'products');
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {sortedProducts.length} product{sortedProducts.length !== 1 ? 's' : ''}
+          Showing {products.length} product{products.length !== 1 ? 's' : ''}
         </p>
-        <ProductSortControls sortBy={sortBy} onSortChange={setSortBy} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {sortedProducts.map((product) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

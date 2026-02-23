@@ -28,24 +28,34 @@ export default function AdvancedFilters({ filters, onFiltersChange, onApply }: A
   };
 
   const handleApply = () => {
+    console.log('🎯 [AdvancedFilters] Apply button clicked');
+    console.log('🎯 [AdvancedFilters] Local filters before sanitization:', localFilters);
+
     // Validate and sanitize all numeric inputs before applying
     const sanitized: ProductFilters = {
       ...localFilters,
-      priceMin: localFilters.priceMin.trim(),
-      priceMax: localFilters.priceMax.trim(),
-      ratingThreshold: localFilters.ratingThreshold.trim(),
-      reviewCountMax: localFilters.reviewCountMax.trim(),
-      bsrMin: localFilters.bsrMin.trim(),
-      bsrMax: localFilters.bsrMax.trim(),
-      monthlyRevenueMin: localFilters.monthlyRevenueMin.trim(),
-      monthlyRevenueMax: localFilters.monthlyRevenueMax.trim(),
+      priceMin: localFilters.priceMin?.trim() || '',
+      priceMax: localFilters.priceMax?.trim() || '',
+      ratingThreshold: localFilters.ratingThreshold?.trim() || '',
+      reviewCountMax: localFilters.reviewCountMax?.trim() || '',
+      bsrMin: localFilters.bsrMin?.trim() || '',
+      bsrMax: localFilters.bsrMax?.trim() || '',
+      monthlyRevenueMin: localFilters.monthlyRevenueMin?.trim() || '',
+      monthlyRevenueMax: localFilters.monthlyRevenueMax?.trim() || '',
     };
 
+    console.log('🎯 [AdvancedFilters] Sanitized filters:', sanitized);
+    console.log('🎯 [AdvancedFilters] Calling onFiltersChange');
+    
     onFiltersChange(sanitized);
+    
+    console.log('🎯 [AdvancedFilters] Calling onApply');
     onApply();
   };
 
   const handleReset = () => {
+    console.log('🔄 [AdvancedFilters] Reset button clicked');
+    
     const resetFilters: ProductFilters = {
       category: '',
       subcategory: '',
@@ -63,8 +73,10 @@ export default function AdvancedFilters({ filters, onFiltersChange, onApply }: A
       highReviewGrowth: false,
       highMarginThreshold: false,
     };
+    
     setLocalFilters(resetFilters);
     onFiltersChange(resetFilters);
+    onApply();
   };
 
   return (
@@ -198,7 +210,7 @@ export default function AdvancedFilters({ filters, onFiltersChange, onApply }: A
           </div>
 
           <div className="flex items-center justify-between">
-            <Label htmlFor="highMargin">High Margin Threshold</Label>
+            <Label htmlFor="highMargin">High Margin Threshold (30%+)</Label>
             <Switch
               id="highMargin"
               checked={localFilters.highMarginThreshold}

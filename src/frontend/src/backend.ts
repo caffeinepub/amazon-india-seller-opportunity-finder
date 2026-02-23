@@ -93,9 +93,10 @@ export interface Product {
     id: ProductId;
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     lastModified: Time;
     sellerType: SellerType;
     availableStock: bigint;
@@ -148,9 +149,10 @@ export interface SellerAnalysisRequest {
 export interface ProductAddRequest {
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     sellerType: SellerType;
     availableStock: bigint;
     category: string;
@@ -597,9 +599,10 @@ async function from_candid_record_n18(_uploadFile: (file: ExternalBlob) => Promi
     id: _ProductId;
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     lastModified: _Time;
     sellerType: _SellerType;
     availableStock: bigint;
@@ -614,9 +617,10 @@ async function from_candid_record_n18(_uploadFile: (file: ExternalBlob) => Promi
     id: ProductId;
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     lastModified: Time;
     sellerType: SellerType;
     availableStock: bigint;
@@ -632,9 +636,10 @@ async function from_candid_record_n18(_uploadFile: (file: ExternalBlob) => Promi
         id: value.id,
         bsr: value.bsr,
         mrp: value.mrp,
-        title: value.title,
         subcategory: value.subcategory,
+        asin: value.asin,
         estimatedMonthlySales: value.estimatedMonthlySales,
+        productName: value.productName,
         lastModified: value.lastModified,
         sellerType: from_candid_SellerType_n19(_uploadFile, _downloadFile, value.sellerType),
         availableStock: value.availableStock,
@@ -894,9 +899,10 @@ function to_candid_record_n41(_uploadFile: (file: ExternalBlob) => Promise<Uint8
 async function to_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     sellerType: SellerType;
     availableStock: bigint;
     category: string;
@@ -909,9 +915,10 @@ async function to_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<
 }): Promise<{
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     sellerType: _SellerType;
     availableStock: bigint;
     category: string;
@@ -925,9 +932,10 @@ async function to_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<
     return {
         bsr: value.bsr,
         mrp: value.mrp,
-        title: value.title,
         subcategory: value.subcategory,
+        asin: value.asin,
         estimatedMonthlySales: value.estimatedMonthlySales,
+        productName: value.productName,
         sellerType: to_candid_SellerType_n10(_uploadFile, _downloadFile, value.sellerType),
         availableStock: value.availableStock,
         category: value.category,

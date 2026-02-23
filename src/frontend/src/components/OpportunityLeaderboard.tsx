@@ -37,7 +37,7 @@ export default function OpportunityLeaderboard({ products }: OpportunityLeaderbo
                   {index + 1}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm line-clamp-1">{product.title}</p>
+                  <p className="font-medium text-sm line-clamp-1">{product.productName}</p>
                   <p className="text-xs text-muted-foreground">{product.category}</p>
                 </div>
                 <div className="text-right">

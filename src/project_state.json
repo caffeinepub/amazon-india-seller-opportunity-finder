@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 25,
+  "projectStateVersion": 29,
   "summary": "Amazon India Seller Opportunity Finder - a full-stack web application for identifying high-demand, low-competition, high-margin products on Amazon.in with real-time data analysis, opportunity scoring, profit calculations, and trend detection across all Amazon India categories",
   "architectural_notes": [
     "React/Next.js frontend with Tailwind CSS and Chart.js for visualization",
@@ -12,8 +12,8 @@
     "India-specific business logic for GST, fees, and buying behavior"
   ],
   "known_issues": [
-    "ProductGrid component not displaying any products regardless of filter state - no results shown with or without filters applied",
-    "Version 11: No products are displayed on the filter page even though the serialization error is resolved - ProductGrid shows no results"
+    "Version 12: Products display without filters but filter functionality is not working - filters are not being applied",
+    "Version 12: Product data appears to be incorrect or inaccurate"
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -472,6 +472,62 @@
         "REQ-70"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-filter-application-logic-in-frontend-src-components-productgrid-tsx-to-ensure-that-when-filters-are-applied-through-the-advancedfilters-component-the-product-list-is-correctly-filtered-and-updated-verifying-that-the-searchproducts-query-is-triggered-with-the-correct-filter-parameters",
+      "title": "Debug and fix the filter application logic in frontend/src/components/ProductGrid.tsx to ensure that when filters are applied through the AdvancedFilters component, the product list is correctly filtered and updated, verifying that the searchProducts query is triggered with the correct filter parameters",
+      "reqIds": [
+        "REQ-71"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-and-fix-the-data-flow-between-advancedfilters-component-in-frontend-src-components-advancedfilters-tsx-and-the-useproductfilters-hook-in-frontend-src-hooks-useproductfilters-ts-to-ensure-filter-state-updates-are-correctly-propagated-when-the-apply-button-is-clicked",
+      "title": "Verify and fix the data flow between AdvancedFilters component in frontend/src/components/AdvancedFilters.tsx and the useProductFilters hook in frontend/src/hooks/useProductFilters.ts to ensure filter state updates are correctly propagated when the Apply button is clicked",
+      "reqIds": [
+        "REQ-72"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-debugging-output-in-frontend-src-components-productgrid-tsx-that-logs-the-filter-application-process-including-active-filters-state-searchproducts-query-parameters-being-sent-query-execution-status-number-of-products-returned-and-whether-filters-were-successfully-applied-to-the-displayed-results",
+      "title": "Add comprehensive debugging output in frontend/src/components/ProductGrid.tsx that logs the filter application process including: active filters state, searchProducts query parameters being sent, query execution status, number of products returned, and whether filters were successfully applied to the displayed results",
+      "reqIds": [
+        "REQ-75"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-the-searchproducts-query-implementation-in-frontend-src-hooks-usequeries-ts-correctly-handles-the-filter-parameter-conversion-and-ensures-the-backend-actor-call-is-made-with-properly-formatted-filter-values-adding-defensive-type-checking-and-conversion-for-all-numeric-fields-before-the-actor-call",
+      "title": "Verify the searchProducts query implementation in frontend/src/hooks/useQueries.ts correctly handles the filter parameter conversion and ensures the backend actor call is made with properly formatted filter values, adding defensive type checking and conversion for all numeric fields before the actor call",
+      "reqIds": [
+        "REQ-76"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-productcard-component-in-frontend-src-components-productcard-tsx-to-display-the-asin-field-prominently-adding-it-near-the-product-title-or-category-information",
+      "title": "Update ProductCard component in frontend/src/components/ProductCard.tsx to display the ASIN field prominently, adding it near the product title or category information",
+      "reqIds": [
+        "REQ-81"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-product-name-title-is-displayed-prominently-as-the-primary-heading-in-productcard-component-in-frontend-src-components-productcard-tsx",
+      "title": "Ensure the product name/title is displayed prominently as the primary heading in ProductCard component in frontend/src/components/ProductCard.tsx",
+      "reqIds": [
+        "REQ-82"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-product-type-definition-in-frontend-type-declarations-to-include-asin-and-productname-title-fields-ensuring-type-safety-across-the-frontend",
+      "title": "Update the Product type definition in frontend type declarations to include asin and productName/title fields, ensuring type safety across the frontend",
+      "reqIds": [
+        "REQ-83"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -612,12 +668,6 @@
       "status": "pending"
     },
     {
-      "id": "AR-38",
-      "summary": "Fix the product display issue where no results are shown in the ProductGrid component whether filters are applied or not - investigate searchProducts query, data fetching, and rendering logic in frontend/src/components/ProductGrid.tsx and frontend/src/hooks/useQueries.ts",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
       "id": "AR-40",
       "summary": "Verify the backend searchProducts method in backend/main.mo returns sample products when called without filters, ensuring the method has mock/seed data available and returns it in the correct response format expected by the frontend",
       "reqIds": [
@@ -654,6 +704,60 @@
       "summary": "Verify the backend actor initialization in frontend/src/hooks/useActor.ts is successful and that actor.searchProducts exists as a callable function, adding console logging when actor is created/changed and explicit error handling if actor or searchProducts method is undefined",
       "reqIds": [
         "REQ-69"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-54",
+      "summary": "Audit and correct the product data accuracy in the mock/sample data returned by the backend searchProducts method in backend/main.mo, ensuring realistic and consistent values for price, estimated sales, revenue, margin, rating, and review counts that align with Amazon.in marketplace patterns",
+      "reqIds": [
+        "REQ-73"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-55",
+      "summary": "Fix the margin calculation logic in backend/main.mo to ensure margin percentages are accurately computed based on product price, estimated costs, and Amazon fees, replacing the currently incorrect 0.3% margin shown for all products with realistic values between 20-40% for high-opportunity products",
+      "reqIds": [
+        "REQ-74"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-58",
+      "summary": "Enhance the backend searchProducts method in backend/main.mo to implement proper filtering logic that respects all filter parameters (price range, rating threshold, review count max, BSR range, revenue range) and returns only products that match all active filter criteria",
+      "reqIds": [
+        "REQ-77"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-59",
+      "summary": "Update the product mock data generation in backend/main.mo to create at least 50 diverse sample products across multiple categories (Electronics, Home & Kitchen, Food Storage) with varied price points (₹30-₹500), realistic sales estimates (100-2000 units/month), accurate revenue calculations, diverse margin percentages (10-45%), and varied ratings (3.8-4.9) to enable meaningful filter testing",
+      "reqIds": [
+        "REQ-78"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-60",
+      "summary": "Add ASIN (Amazon Standard Identification Number) and Product name fields to the product data model and display in the UI",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-61",
+      "summary": "Add ASIN field to the Product type in backend/main.mo, storing it as a Text value (10-character alphanumeric Amazon identifier)",
+      "reqIds": [
+        "REQ-79"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-62",
+      "summary": "Add productName field to the Product type in backend/main.mo if not already present, ensuring it stores the full product title",
+      "reqIds": [
+        "REQ-80"
       ],
       "status": "pending"
     }

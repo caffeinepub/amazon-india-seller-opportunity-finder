@@ -7,7 +7,8 @@ import type { Product, ProductSearchFilters, OpportunityScore, UserProfile } fro
 const FALLBACK_PRODUCTS: Product[] = [
   {
     id: 'fallback-1',
-    title: 'Fallback Wireless Headphones',
+    productName: 'Fallback Wireless Headphones',
+    asin: 'B012345678',
     category: 'Electronics',
     subcategory: 'Audio',
     price: 199.99,
@@ -25,7 +26,8 @@ const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'fallback-2',
-    title: 'Fallback Water Bottle',
+    productName: 'Fallback Water Bottle',
+    asin: 'B023456789',
     category: 'Home & Kitchen',
     subcategory: 'Drinkware',
     price: 29.99,
@@ -43,7 +45,8 @@ const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'fallback-3',
-    title: 'Fallback Yoga Mat',
+    productName: 'Fallback Yoga Mat',
+    asin: 'B034567890',
     category: 'Sports',
     subcategory: 'Yoga',
     price: 49.99,
@@ -61,7 +64,8 @@ const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'fallback-4',
-    title: 'Fallback Bluetooth Speaker',
+    productName: 'Fallback Bluetooth Speaker',
+    asin: 'B045678901',
     category: 'Electronics',
     subcategory: 'Audio',
     price: 89.99,
@@ -79,7 +83,8 @@ const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'fallback-5',
-    title: 'Fallback Lunch Box',
+    productName: 'Fallback Lunch Box',
+    asin: 'B056789012',
     category: 'Home & Kitchen',
     subcategory: 'Food Storage',
     price: 34.99,
@@ -101,11 +106,20 @@ export function useSearchProducts(filters: ProductSearchFilters) {
   const { actor, isFetching: actorFetching } = useActor();
 
   // Create a serializable query key (convert BigInt to string for React Query)
-  const serializableKey = {
-    ...filters,
+  const serializableKey = JSON.stringify({
+    category: filters.category,
+    subcategory: filters.subcategory,
+    priceRange: filters.priceRange,
+    ratingThreshold: filters.ratingThreshold,
     reviewCountMax: filters.reviewCountMax?.toString(),
     bsrRange: filters.bsrRange ? [filters.bsrRange[0].toString(), filters.bsrRange[1].toString()] : undefined,
-  };
+    monthlyRevenueRange: filters.monthlyRevenueRange,
+    lightweightPreference: filters.lightweightPreference,
+    nonBrandedFriendly: filters.nonBrandedFriendly,
+    lowFBACount: filters.lowFBACount,
+    highReviewGrowth: filters.highReviewGrowth,
+    highMarginThreshold: filters.highMarginThreshold,
+  });
 
   return useQuery<Product[]>({
     queryKey: ['products', serializableKey],
@@ -119,27 +133,74 @@ export function useSearchProducts(filters: ProductSearchFilters) {
         throw new Error('Actor not available');
       }
 
-      // Ensure proper types for backend call
+      // Validate and sanitize filters before sending to backend
       const sanitizedFilters: ProductSearchFilters = {
-        ...filters,
-        reviewCountMax: filters.reviewCountMax !== undefined 
-          ? BigInt(filters.reviewCountMax.toString())
-          : undefined,
-        bsrRange: filters.bsrRange 
-          ? [BigInt(filters.bsrRange[0].toString()), BigInt(filters.bsrRange[1].toString())] as [bigint, bigint]
-          : undefined,
-        priceRange: filters.priceRange
-          ? [Number(filters.priceRange[0]), Number(filters.priceRange[1])] as [number, number]
-          : undefined,
-        monthlyRevenueRange: filters.monthlyRevenueRange
-          ? [Number(filters.monthlyRevenueRange[0]), Number(filters.monthlyRevenueRange[1])] as [number, number]
-          : undefined,
-        ratingThreshold: filters.ratingThreshold !== undefined
-          ? Number(filters.ratingThreshold)
-          : undefined,
+        category: filters.category,
+        subcategory: filters.subcategory,
+        lightweightPreference: filters.lightweightPreference,
+        nonBrandedFriendly: filters.nonBrandedFriendly,
+        lowFBACount: filters.lowFBACount,
+        highReviewGrowth: filters.highReviewGrowth,
+        highMarginThreshold: filters.highMarginThreshold,
       };
 
-      console.log('📤 [useQueries] Sending filters to backend:', {
+      // Validate and add numeric fields
+      if (filters.priceRange) {
+        const [min, max] = filters.priceRange;
+        if (!isNaN(min) && !isNaN(max) && min >= 0 && max >= min) {
+          sanitizedFilters.priceRange = [Number(min), Number(max)];
+        } else {
+          console.warn('⚠️ [useQueries] Invalid priceRange, skipping:', filters.priceRange);
+        }
+      }
+
+      if (filters.ratingThreshold !== undefined) {
+        const rating = Number(filters.ratingThreshold);
+        if (!isNaN(rating) && rating >= 0 && rating <= 5) {
+          sanitizedFilters.ratingThreshold = rating;
+        } else {
+          console.warn('⚠️ [useQueries] Invalid ratingThreshold, skipping:', filters.ratingThreshold);
+        }
+      }
+
+      if (filters.reviewCountMax !== undefined) {
+        try {
+          const reviewMax = BigInt(filters.reviewCountMax.toString());
+          if (reviewMax >= 0n) {
+            sanitizedFilters.reviewCountMax = reviewMax;
+          } else {
+            console.warn('⚠️ [useQueries] Invalid reviewCountMax (negative), skipping:', filters.reviewCountMax);
+          }
+        } catch (e) {
+          console.warn('⚠️ [useQueries] Invalid reviewCountMax (conversion error), skipping:', filters.reviewCountMax);
+        }
+      }
+
+      if (filters.bsrRange) {
+        try {
+          const [min, max] = filters.bsrRange;
+          const bsrMin = BigInt(min.toString());
+          const bsrMax = BigInt(max.toString());
+          if (bsrMin >= 0n && bsrMax >= bsrMin) {
+            sanitizedFilters.bsrRange = [bsrMin, bsrMax];
+          } else {
+            console.warn('⚠️ [useQueries] Invalid bsrRange, skipping:', filters.bsrRange);
+          }
+        } catch (e) {
+          console.warn('⚠️ [useQueries] Invalid bsrRange (conversion error), skipping:', filters.bsrRange);
+        }
+      }
+
+      if (filters.monthlyRevenueRange) {
+        const [min, max] = filters.monthlyRevenueRange;
+        if (!isNaN(min) && !isNaN(max) && min >= 0 && max >= min) {
+          sanitizedFilters.monthlyRevenueRange = [Number(min), Number(max)];
+        } else {
+          console.warn('⚠️ [useQueries] Invalid monthlyRevenueRange, skipping:', filters.monthlyRevenueRange);
+        }
+      }
+
+      console.log('📤 [useQueries] Query Parameters - Sending filters to backend:', {
         ...sanitizedFilters,
         reviewCountMax: sanitizedFilters.reviewCountMax?.toString(),
         bsrRange: sanitizedFilters.bsrRange?.map(b => b.toString()),
@@ -149,33 +210,45 @@ export function useSearchProducts(filters: ProductSearchFilters) {
         const result = await actor.searchProducts(sanitizedFilters);
         
         console.log('📥 [useQueries] Raw response from backend:', result);
+        console.log('📥 [useQueries] Response type:', typeof result);
         console.log('📥 [useQueries] Response __kind__:', result.__kind__);
 
         if (result.__kind__ === 'error') {
           console.error('❌ [useQueries] Backend returned error:', result.error);
-          console.warn('⚠️ [useQueries] Using fallback mock data due to error');
-          return FALLBACK_PRODUCTS;
+          throw new Error(`Backend error: ${result.error}`);
         }
 
-        console.log('✅ [useQueries] Success response, products count:', result.success?.length || 0);
+        console.log('✅ [useQueries] Query Status: Success');
+        console.log('✅ [useQueries] Products count:', result.success?.length || 0);
         
         if (result.success && result.success.length > 0) {
-          console.log('📦 [useQueries] First product:', result.success[0]);
+          console.log('📦 [useQueries] First product sample:', {
+            id: result.success[0].id,
+            productName: result.success[0].productName,
+            asin: result.success[0].asin,
+            price: result.success[0].price,
+            margin: result.success[0].margin,
+            rating: result.success[0].rating,
+            reviewCount: result.success[0].reviewCount.toString(),
+          });
         } else {
-          console.warn('⚠️ [useQueries] Backend returned empty array, using fallback data');
-          return FALLBACK_PRODUCTS;
+          console.warn('⚠️ [useQueries] Backend returned empty array');
         }
 
-        return result.success;
+        return result.success || [];
       } catch (error) {
+        console.error('❌ [useQueries] Query Status: Error');
         console.error('❌ [useQueries] Exception during searchProducts call:', error);
-        console.error('❌ [useQueries] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-        console.warn('⚠️ [useQueries] Using fallback mock data due to exception');
-        return FALLBACK_PRODUCTS;
+        console.error('❌ [useQueries] Error details:', {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          stack: error instanceof Error ? error.stack : 'No stack trace',
+        });
+        throw error;
       }
     },
     enabled: !!actor && !actorFetching,
     retry: 1,
+    staleTime: 0, // Always refetch when filters change
   });
 }
 

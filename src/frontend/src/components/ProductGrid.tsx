@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSearchProducts } from '../hooks/useQueries';
 import { useProductFilters } from '../hooks/useProductFilters';
 import ProductCard from './ProductCard';
@@ -6,120 +6,37 @@ import LoadingStates from './LoadingStates';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { SellerType } from '../backend';
 import type { Product } from '../backend';
-
-// TEST MODE - Set to true to bypass backend and use hardcoded data
-const TEST_MODE = false;
-
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: 'test-1',
-    title: 'Test Wireless Headphones',
-    category: 'Electronics',
-    subcategory: 'Audio',
-    price: 199.99,
-    mrp: 249.99,
-    rating: 4.5,
-    reviewCount: BigInt(1200),
-    bsr: BigInt(800),
-    estimatedMonthlySales: BigInt(500),
-    brand: 'TestBrand',
-    sellerType: SellerType.fba,
-    availableStock: BigInt(300),
-    margin: 0.25,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-  {
-    id: 'test-2',
-    title: 'Test Water Bottle',
-    category: 'Home & Kitchen',
-    subcategory: 'Drinkware',
-    price: 29.99,
-    mrp: 39.99,
-    rating: 4.7,
-    reviewCount: BigInt(900),
-    bsr: BigInt(1500),
-    estimatedMonthlySales: BigInt(800),
-    brand: 'TestBrand',
-    sellerType: SellerType.easyShip,
-    availableStock: BigInt(450),
-    margin: 0.32,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-  {
-    id: 'test-3',
-    title: 'Test Yoga Mat',
-    category: 'Sports',
-    subcategory: 'Yoga',
-    price: 49.99,
-    mrp: 59.99,
-    rating: 4.6,
-    reviewCount: BigInt(1100),
-    bsr: BigInt(1000),
-    estimatedMonthlySales: BigInt(650),
-    brand: 'TestBrand',
-    sellerType: SellerType.fba,
-    availableStock: BigInt(200),
-    margin: 0.28,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-];
 
 export default function ProductGrid() {
   const { getBackendFilters, resetFilters, hasActiveFilters, filters } = useProductFilters();
   const backendFilters = getBackendFilters();
   const query = useSearchProducts(backendFilters);
 
-  // Comprehensive logging
-  console.log('🎯 [ProductGrid] Component render');
-  console.log('🎯 [ProductGrid] Query state:', {
-    isLoading: query.isLoading,
-    isFetching: query.isFetching,
-    isError: query.isError,
-    isSuccess: query.isSuccess,
-    dataExists: !!query.data,
-  });
-  console.log('🎯 [ProductGrid] Query data:', query.data);
-  console.log('🎯 [ProductGrid] Query error:', query.error);
-  
-  if (query.data) {
-    console.log('🎯 [ProductGrid] Data type:', typeof query.data);
-    console.log('🎯 [ProductGrid] Is array:', Array.isArray(query.data));
-    console.log('🎯 [ProductGrid] Data length:', Array.isArray(query.data) ? query.data.length : 'N/A');
-    if (Array.isArray(query.data) && query.data.length > 0) {
-      console.log('🎯 [ProductGrid] First product:', query.data[0]);
-    }
-  }
+  // Log filter changes
+  useEffect(() => {
+    console.log('🎯 [ProductGrid] Filter Applied:', {
+      hasActiveFilters,
+      frontendFilters: filters,
+      backendFilters: {
+        ...backendFilters,
+        reviewCountMax: backendFilters.reviewCountMax?.toString(),
+        bsrRange: backendFilters.bsrRange?.map(b => b.toString()),
+      }
+    });
+  }, [filters, hasActiveFilters]);
 
-  // TEST MODE: Use hardcoded data
-  if (TEST_MODE) {
-    console.log('⚠️ [ProductGrid] TEST MODE ACTIVE - Using mock data');
-    return (
-      <div className="space-y-4">
-        <Alert className="bg-yellow-50 border-yellow-200">
-          <AlertCircle className="h-5 w-5 text-yellow-600" />
-          <AlertTitle className="text-yellow-800">Test Mode Active</AlertTitle>
-          <AlertDescription className="text-yellow-700">
-            Displaying hardcoded test data. Set TEST_MODE to false to use real backend data.
-          </AlertDescription>
-        </Alert>
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Showing {MOCK_PRODUCTS.length} test product{MOCK_PRODUCTS.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MOCK_PRODUCTS.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  // Log query state changes
+  useEffect(() => {
+    console.log('🎯 [ProductGrid] Query state changed:', {
+      isLoading: query.isLoading,
+      isFetching: query.isFetching,
+      isError: query.isError,
+      isSuccess: query.isSuccess,
+      dataExists: !!query.data,
+      productCount: Array.isArray(query.data) ? query.data.length : 0,
+    });
+  }, [query.isLoading, query.isFetching, query.isError, query.isSuccess, query.data]);
 
   // Extract products from query data
   let products: Product[] = [];
@@ -136,7 +53,6 @@ export default function ProductGrid() {
         console.log('✅ [ProductGrid] Extracted from success variant, count:', products.length);
       } else if ((query.data as any).__kind__ === 'error') {
         console.error('❌ [ProductGrid] Data is error variant:', (query.data as any).error);
-        query.error = new Error((query.data as any).error);
       }
     } else if (Array.isArray(query.data)) {
       // Direct array response
@@ -147,15 +63,20 @@ export default function ProductGrid() {
     }
   }
 
-  console.log('🎯 [ProductGrid] Final products array length:', products.length);
+  console.log('🎯 [ProductGrid] Product count before/after filtering:', {
+    before: 'N/A (backend filtered)',
+    after: products.length,
+  });
 
   if (query.isLoading) {
-    console.log('⏳ [ProductGrid] Rendering loading state');
+    console.log('⏳ [ProductGrid] Query Status: Loading');
     return <LoadingStates />;
   }
 
   if (query.error) {
-    console.log('❌ [ProductGrid] Rendering error state');
+    console.log('❌ [ProductGrid] Query Status: Error');
+    console.error('❌ [ProductGrid] Error details:', query.error);
+    
     return (
       <div className="flex items-center justify-center min-h-[400px] p-8">
         <Alert variant="destructive" className="max-w-2xl">
@@ -188,7 +109,7 @@ export default function ProductGrid() {
                   {filters.bsrMin && filters.bsrMax && <li>BSR: {filters.bsrMin} - {filters.bsrMax}</li>}
                   {filters.monthlyRevenueMin && filters.monthlyRevenueMax && <li>Revenue: ₹{filters.monthlyRevenueMin} - ₹{filters.monthlyRevenueMax}</li>}
                   {filters.highReviewGrowth && <li>High review growth enabled</li>}
-                  {filters.highMarginThreshold && <li>High margin threshold enabled</li>}
+                  {filters.highMarginThreshold && <li>High margin threshold (30%+) enabled</li>}
                 </ul>
               </div>
             )}
@@ -222,7 +143,7 @@ export default function ProductGrid() {
   }
 
   if (!products || products.length === 0) {
-    console.log('📭 [ProductGrid] Rendering empty state');
+    console.log('📭 [ProductGrid] Query Status: Success (Empty)');
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
         <div className="max-w-md space-y-4">
@@ -243,13 +164,21 @@ export default function ProductGrid() {
     );
   }
 
+  console.log('✅ [ProductGrid] Query Status: Success');
   console.log('✅ [ProductGrid] Rendering products grid with', products.length, 'products');
+  
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           Showing {products.length} product{products.length !== 1 ? 's' : ''}
         </p>
+        {hasActiveFilters && (
+          <Button onClick={resetFilters} variant="ghost" size="sm" className="gap-2">
+            <X className="h-4 w-4" />
+            Clear Filters
+          </Button>
+        )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (

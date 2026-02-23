@@ -1,96 +1,79 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-23T18:48:27.212Z",
+  "generatedAt": "2026-02-23T19:36:40.089Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 7,
-    "implemented": 5,
+    "total": 5,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-64",
-        "summary": "Add comprehensive console logging in frontend/src/components/ProductGrid.tsx at component render to log: query.isLoading boolean, query.isError boolean, query.error object (if present), query.data structure, products array existence and length, and first product object details if array is non-empty",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ProductGrid.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ProductGrid.tsx"
-        ]
-      },
-      {
-        "id": "REQ-65",
-        "summary": "Verify the searchProducts query in frontend/src/hooks/useQueries.ts is receiving a successful response from the backend by adding detailed logging of: query execution start, filter parameters being sent, raw response from actor.searchProducts(), response data structure, and any caught errors during the query",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
-        ]
-      },
-      {
-        "id": "REQ-66",
-        "summary": "Verify the backend searchProducts method in backend/main.mo contains sample/mock product data that can be returned when called without filters or with minimal filters, ensuring at least 10-20 mock products are available for testing",
+        "id": "REQ-79",
+        "summary": "Add ASIN field to the Product type in backend/main.mo, storing it as a Text value (10-character alphanumeric Amazon identifier)",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-67",
-        "summary": "Fix the data path in frontend/src/components/ProductGrid.tsx to correctly extract the products array from the searchProducts query response, verifying the response structure matches what the component expects (e.g., query.data vs query.data.products vs query.data.ok with nested products array)",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ProductGrid.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ProductGrid.tsx"
-        ]
-      },
-      {
-        "id": "REQ-68",
-        "summary": "Add a temporary hardcoded test in frontend/src/components/ProductGrid.tsx that bypasses the searchProducts query entirely and renders a static array of 3 mock products to isolate whether the issue is with data fetching or rendering logic",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ProductGrid.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ProductGrid.tsx"
-        ]
-      },
-      {
-        "id": "REQ-69",
-        "summary": "Verify the backend actor initialization in frontend/src/hooks/useActor.ts is successful and that actor.searchProducts exists as a callable function, adding console logging when actor is created/changed and explicit error handling if actor or searchProducts method is undefined",
-        "status": "missing",
-        "plannedFiles": [
-          "frontend/src/hooks/useActor.ts"
-        ],
+        "id": "REQ-80",
+        "summary": "Add productName field to the Product type in backend/main.mo if not already present, ensuring it stores the full product title",
+        "status": "unknown",
+        "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-70",
-        "summary": "Add default/fallback product data directly in frontend/src/hooks/useQueries.ts searchProducts query that returns at least 5 mock products if the backend call fails or returns empty results, allowing the UI to display sample data for testing",
+        "id": "REQ-81",
+        "summary": "Update ProductCard component in frontend/src/components/ProductCard.tsx to display the ASIN field prominently, adding it near the product title or category information",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/ProductCard.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/ProductCard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-82",
+        "summary": "Ensure the product name/title is displayed prominently as the primary heading in ProductCard component in frontend/src/components/ProductCard.tsx",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/ProductCard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/ProductCard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-83",
+        "summary": "Update the Product type definition in frontend type declarations to include asin and productName/title fields, ensuring type safety across the frontend",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/backend.d.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/backend.d.ts"
         ]
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/ProductGrid.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/OpportunityLeaderboard.tsx",
+    "frontend/src/components/ProductCard.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
     "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/CompetitorAnalysis.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -51,7 +51,7 @@ export default function CompetitorAnalysis() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">{product.title}</h1>
+          <h1 className="text-3xl font-bold">{product.productName}</h1>
           <p className="text-muted-foreground">{product.category} • {product.subcategory}</p>
         </div>
       </div>

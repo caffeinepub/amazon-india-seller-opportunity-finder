@@ -83,6 +83,7 @@ export function useProductFilters() {
   });
 
   useEffect(() => {
+    console.log('💾 [useProductFilters] Saving filters to sessionStorage:', filters);
     sessionStorage.setItem('productFilters', JSON.stringify(filters));
   }, [filters]);
 
@@ -111,12 +112,13 @@ export function useProductFilters() {
     const revenueMin = safeParseNumber(filters.monthlyRevenueMin);
     const revenueMax = safeParseNumber(filters.monthlyRevenueMax);
     const reviewMax = safeParseBigInt(filters.reviewCountMax);
+    const rating = safeParseNumber(filters.ratingThreshold);
 
-    return {
+    const backendFilters = {
       category: filters.category || undefined,
       subcategory: filters.subcategory || undefined,
       priceRange: priceMin !== undefined && priceMax !== undefined ? [priceMin, priceMax] as [number, number] : undefined,
-      ratingThreshold: safeParseNumber(filters.ratingThreshold),
+      ratingThreshold: rating,
       reviewCountMax: reviewMax,
       bsrRange: bsrMin !== undefined && bsrMax !== undefined ? [bsrMin, bsrMax] as [bigint, bigint] : undefined,
       monthlyRevenueRange: revenueMin !== undefined && revenueMax !== undefined ? [revenueMin, revenueMax] as [number, number] : undefined,
@@ -126,9 +128,21 @@ export function useProductFilters() {
       highReviewGrowth: filters.highReviewGrowth,
       highMarginThreshold: filters.highMarginThreshold,
     };
+
+    console.log('🔄 [useProductFilters] Converting to backend filters:', {
+      frontend: filters,
+      backend: {
+        ...backendFilters,
+        reviewCountMax: backendFilters.reviewCountMax?.toString(),
+        bsrRange: backendFilters.bsrRange?.map(b => b.toString()),
+      }
+    });
+
+    return backendFilters;
   };
 
   const resetFilters = () => {
+    console.log('🔄 [useProductFilters] Resetting filters to default');
     setFilters(defaultFilters);
     sessionStorage.removeItem('productFilters');
   };

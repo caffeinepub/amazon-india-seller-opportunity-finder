@@ -7,6 +7,7 @@ export default function Dashboard() {
   const { filters, setFilters } = useProductFilters();
 
   const handleCategoryChange = (category: string) => {
+    console.log('📂 [Dashboard] Category changed to:', category);
     setFilters({
       ...filters,
       category,
@@ -15,7 +16,13 @@ export default function Dashboard() {
   };
 
   const handleFiltersChange = (newFilters: typeof filters) => {
+    console.log('🔧 [Dashboard] Filters changed:', newFilters);
     setFilters(newFilters);
+  };
+
+  const handleApply = () => {
+    console.log('✅ [Dashboard] Apply triggered - filters already updated via setFilters');
+    // No additional action needed - setFilters already triggers re-render and query refetch
   };
 
   return (
@@ -37,7 +44,7 @@ export default function Dashboard() {
             <AdvancedFilters
               filters={filters}
               onFiltersChange={handleFiltersChange}
-              onApply={() => {}}
+              onApply={handleApply}
             />
           </aside>
 

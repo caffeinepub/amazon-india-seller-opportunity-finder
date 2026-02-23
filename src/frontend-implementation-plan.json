@@ -1,103 +1,53 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Debug and fix no results displayed in ProductGrid after filter error resolution",
+  "title": "Add ASIN and Product Name fields to product data",
   "requirements": [
     {
-      "id": "REQ-64",
-      "summary": "Add comprehensive console logging in ProductGrid to debug query state and data structure",
+      "id": "REQ-81",
+      "summary": "Display ASIN field prominently in ProductCard component with clear labeling and monospace styling",
       "acceptanceCriteria": [
-        "Console logs show query loading state transitions",
-        "Console logs display the complete query.data structure returned from searchProducts",
-        "Console logs indicate whether products array exists and its length",
-        "Console logs show the first product object when data is returned"
+        "ASIN is displayed on each product card",
+        "ASIN is labeled clearly (e.g., 'ASIN: B08XYZABC1')",
+        "ASIN uses monospace or distinctive styling for readability"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/ProductGrid.tsx",
+          "path": "frontend/src/components/ProductCard.tsx",
           "operation": "modify",
-          "description": "Add detailed console.log statements at component render to log: query.isLoading (boolean), query.isError (boolean), query.error (full object if present), query.data (complete structure), products array existence check, products.length, and first product object details if products array is non-empty. Place logging immediately after the searchProducts query destructuring and before any conditional rendering logic."
+          "description": "Add ASIN display near the product title or category information. Use monospace font styling for the 10-character alphanumeric identifier. Include a clear label such as 'ASIN:' and ensure the styling is distinctive and readable in both light and dark modes. Position the ASIN field in a prominent location within the card layout, potentially near the top alongside category information."
         }
       ]
     },
     {
-      "id": "REQ-65",
-      "summary": "Add detailed logging in useQueries searchProducts to verify backend communication",
+      "id": "REQ-82",
+      "summary": "Ensure product name is displayed as the primary heading in ProductCard with proper text handling",
       "acceptanceCriteria": [
-        "Console logs confirm searchProducts query is executing",
-        "Console logs show the exact filter parameters sent to backend",
-        "Console logs display the raw response structure from backend actor",
-        "Any query errors are logged with full error details"
+        "Product name is the most prominent text element on the card",
+        "Product name supports text truncation or wrapping for long titles",
+        "Product name is clearly visible in both light and dark modes"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/ProductCard.tsx",
           "operation": "modify",
-          "description": "In the searchProducts query function, add console logging at query start (log 'searchProducts query executing'), log the filters parameter being sent to backend (after convertToBackendFilters), log the raw response immediately after actor.searchProducts() call (before any processing), and add try-catch error logging that captures and logs the full error object with stack trace. Ensure BigInt values in filters are logged as strings for console readability."
+          "description": "Verify that the product name (productName field from Product type) is displayed as the primary heading element with appropriate text sizing and weight. Implement text truncation or wrapping to handle long Amazon product titles gracefully. Ensure the heading uses appropriate Tailwind classes for visibility in both theme modes. If the current implementation uses a different field name for the product title, update it to use the productName field from the backend Product type."
         }
       ]
     },
     {
-      "id": "REQ-67",
-      "summary": "Fix data path extraction in ProductGrid to handle response structure variations",
+      "id": "REQ-83",
+      "summary": "Update frontend Product type definition to include asin and productName fields for type safety",
       "acceptanceCriteria": [
-        "ProductGrid correctly extracts products array from query response regardless of response wrapper structure",
-        "Component handles both direct array responses and wrapped responses (e.g., { ok: products[] })",
-        "Products array is properly passed to the map function for rendering ProductCard components"
+        "TypeScript Product interface includes asin: string field",
+        "TypeScript Product interface includes productName or title: string field",
+        "No type errors in components using Product type"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/ProductGrid.tsx",
+          "path": "frontend/src/backend.d.ts",
           "operation": "modify",
-          "description": "Update the products array extraction logic to handle multiple response structures from searchProducts. Check if query.data has __kind__ discriminator (ProductSearchResult union type with success/error variants), extract products from query.data.success if __kind__ is 'success', handle query.data.error if __kind__ is 'error', and fall back to treating query.data directly as array if no __kind__ field exists. Add defensive checks for null/undefined at each step. Log the chosen extraction path for debugging."
-        }
-      ]
-    },
-    {
-      "id": "REQ-68",
-      "summary": "Add temporary hardcoded test mode to isolate rendering vs data fetching issues",
-      "acceptanceCriteria": [
-        "Hardcoded mock products are rendered successfully in ProductGrid when query is bypassed",
-        "ProductCard components display correctly with static mock data",
-        "This confirms whether the rendering logic works independently of backend data fetching"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/ProductGrid.tsx",
-          "operation": "modify",
-          "description": "Add a commented-out TEST_MODE constant (set to false by default) at the top of the component. When TEST_MODE is true, bypass the searchProducts query entirely and use a hardcoded array of 3 mock Product objects with all required fields (id, title, category, price, rating, reviewCount as bigint, bsr as bigint, estimatedMonthlySales as bigint, margin, mrp, brand, subcategory, sellerType, availableStock as bigint, lastModified as bigint, images as empty array). Include clear comments explaining this is for debugging only and must be removed after issue is resolved."
-        }
-      ]
-    },
-    {
-      "id": "REQ-69",
-      "summary": "Add actor initialization verification logging in useActor",
-      "acceptanceCriteria": [
-        "Console logs confirm backend actor is successfully initialized",
-        "Console logs verify actor.searchProducts is a defined function",
-        "Error is thrown with clear message if actor initialization fails or searchProducts is missing"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useActor.ts",
-          "operation": "modify",
-          "description": "Add console.log when actor is first created or changes (log 'Actor initialized:', actor is null/defined). If actor exists, log typeof actor.searchProducts to verify it's a function. Add a useEffect that runs when actor changes to perform these verification checks. If actor.searchProducts is undefined when actor exists, log a warning message. Do not modify Internet Identity integration or authentication flow per constraints."
-        }
-      ]
-    },
-    {
-      "id": "REQ-70",
-      "summary": "Add fallback mock data in searchProducts query for testing when backend fails",
-      "acceptanceCriteria": [
-        "searchProducts query includes fallback mock data that is returned on backend failure",
-        "Fallback products match the Product type structure expected by ProductCard",
-        "ProductGrid displays fallback products when backend returns no results"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "In the searchProducts query function, wrap the actor.searchProducts() call in a try-catch block. On catch or if response is error variant or empty success array, return a fallback response with 5 mock Product objects. Mock products must include all required fields matching the Product interface from backend.d.ts (with bigint types for bsr, reviewCount, estimatedMonthlySales, availableStock, lastModified). Log when fallback data is being used. Structure fallback as ProductSearchResult success variant: { __kind__: 'success', success: [mock products array] }."
+          "description": "Verify that the Product interface includes both asin: string and productName: string fields. The backend interface shows these fields are already present in the Product type. Ensure no additional modifications are needed and that the type definition matches the backend Product type exactly. If any discrepancies exist between the frontend type and backend type, align them to ensure type safety across all frontend components using the Product type."
         }
       ]
     }

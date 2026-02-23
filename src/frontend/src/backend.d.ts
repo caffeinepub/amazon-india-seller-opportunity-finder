@@ -18,9 +18,10 @@ export interface Product {
     id: ProductId;
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     lastModified: Time;
     sellerType: SellerType;
     availableStock: bigint;
@@ -70,9 +71,10 @@ export interface SellerAnalysisRequest {
 export interface ProductAddRequest {
     bsr: bigint;
     mrp: number;
-    title: string;
     subcategory: string;
+    asin: string;
     estimatedMonthlySales: bigint;
+    productName: string;
     sellerType: SellerType;
     availableStock: bigint;
     category: string;

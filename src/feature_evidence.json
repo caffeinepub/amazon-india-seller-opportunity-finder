@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-comprehensive-console-logging-in-frontend-src-components-productgrid-tsx-at-component-render-to-log-query-isloading-boolean-query-iserror-boolean-query-error-object-if-present-query-data-structure-products-array-existence-and-length-and-first-product-object-details-if-array-is-non-empty",
-      "featureTitle": "Add comprehensive console logging in frontend/src/components/ProductGrid.tsx at component render to log: query.isLoading boolean, query.isError boolean, query.error object (if present), query.data structure, products array existence and length, and first product object details if array is non-empty",
+      "featureId": "feature-update-productcard-component-in-frontend-src-components-productcard-tsx-to-display-the-asin-field-prominently-adding-it-near-the-product-title-or-category-information",
+      "featureTitle": "Update ProductCard component in frontend/src/components/ProductCard.tsx to display the ASIN field prominently, adding it near the product title or category information",
       "files": [
-        "frontend/src/components/ProductGrid.tsx"
+        "frontend/src/components/ProductCard.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -17,15 +17,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-64"
+        "REQ-81"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-verify-the-searchproducts-query-in-frontend-src-hooks-usequeries-ts-is-receiving-a-successful-response-from-the-backend-by-adding-detailed-logging-of-query-execution-start-filter-parameters-being-sent-raw-response-from-actor-searchproducts-response-data-structure-and-any-caught-errors-during-the-query",
-      "featureTitle": "Verify the searchProducts query in frontend/src/hooks/useQueries.ts is receiving a successful response from the backend by adding detailed logging of: query execution start, filter parameters being sent, raw response from actor.searchProducts(), response data structure, and any caught errors during the query",
+      "featureId": "feature-ensure-the-product-name-title-is-displayed-prominently-as-the-primary-heading-in-productcard-component-in-frontend-src-components-productcard-tsx",
+      "featureTitle": "Ensure the product name/title is displayed prominently as the primary heading in ProductCard component in frontend/src/components/ProductCard.tsx",
       "files": [
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/components/ProductCard.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -37,16 +37,14 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-65"
+        "REQ-82"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-fix-the-data-path-in-frontend-src-components-productgrid-tsx-to-correctly-extract-the-products-array-from-the-searchproducts-query-response-verifying-the-response-structure-matches-what-the-component-expects-e-g-query-data-vs-query-data-products-vs-query-data-ok-with-nested-products-array",
-      "featureTitle": "Fix the data path in frontend/src/components/ProductGrid.tsx to correctly extract the products array from the searchProducts query response, verifying the response structure matches what the component expects (e.g., query.data vs query.data.products vs query.data.ok with nested products array)",
-      "files": [
-        "frontend/src/components/ProductGrid.tsx"
-      ],
+      "featureId": "feature-update-the-product-type-definition-in-frontend-type-declarations-to-include-asin-and-productname-title-fields-ensuring-type-safety-across-the-frontend",
+      "featureTitle": "Update the Product type definition in frontend type declarations to include asin and productName/title fields, ensuring type safety across the frontend",
+      "files": [],
       "components": [
         "authorization@4.0.0",
         "blob-storage@4.0.0",
@@ -57,47 +55,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-67"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-temporary-hardcoded-test-in-frontend-src-components-productgrid-tsx-that-bypasses-the-searchproducts-query-entirely-and-renders-a-static-array-of-3-mock-products-to-isolate-whether-the-issue-is-with-data-fetching-or-rendering-logic",
-      "featureTitle": "Add a temporary hardcoded test in frontend/src/components/ProductGrid.tsx that bypasses the searchProducts query entirely and renders a static array of 3 mock products to isolate whether the issue is with data fetching or rendering logic",
-      "files": [
-        "frontend/src/components/ProductGrid.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-68"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-default-fallback-product-data-directly-in-frontend-src-hooks-usequeries-ts-searchproducts-query-that-returns-at-least-5-mock-products-if-the-backend-call-fails-or-returns-empty-results-allowing-the-ui-to-display-sample-data-for-testing",
-      "featureTitle": "Add default/fallback product data directly in frontend/src/hooks/useQueries.ts searchProducts query that returns at least 5 mock products if the backend call fails or returns empty results, allowing the UI to display sample data for testing",
-      "files": [
-        "frontend/src/hooks/useQueries.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-70"
+        "REQ-83"
       ],
       "confidence": "high"
     }

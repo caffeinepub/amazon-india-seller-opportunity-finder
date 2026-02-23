@@ -1,2 +1,3 @@
-# amazon-india-seller-opportunity-finder
-Exported from Caffeine project: Amazon India Seller Opportunity Finder
+## Amazon India Seller Opportunity Finder
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

@@ -1,0 +1,387 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Amazon India Seller Opportunity Finder - Frontend Implementation",
+  "requirements": [
+    {
+      "id": "REQ-3",
+      "summary": "Implement category filter and subcategory drill-down navigation for all Amazon.in product categories",
+      "acceptanceCriteria": [
+        "All listed categories are available for filtering",
+        "Users can drill down into subcategories",
+        "Category hierarchy is navigable in the UI"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/CategoryFilter.tsx",
+          "operation": "create",
+          "description": "Create a category filter component that displays all Amazon.in categories (Electronics, Home & Kitchen, Beauty, Grocery, Fashion, Automotive, Industrial, Toys, Baby, Health, Books, Pet Supplies, Office, Sports, Handmade, Luxury, Emerging categories) with subcategory drill-down functionality. Use the authorization component to ensure users are logged in before viewing categories."
+        },
+        {
+          "path": "frontend/src/hooks/useCategories.ts",
+          "operation": "create",
+          "description": "Create a custom hook that manages category state, subcategory navigation, and calls the backend searchProductsByCategory method from the backend interface."
+        },
+        {
+          "path": "frontend/src/types/categories.ts",
+          "operation": "create",
+          "description": "Define TypeScript types for category hierarchy, including all required categories and their subcategories."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Build advanced filtering UI with all specified filter criteria",
+      "acceptanceCriteria": [
+        "All specified filters are functional and combinable",
+        "Filters update product results in real-time",
+        "Filter state persists during user session"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AdvancedFilters.tsx",
+          "operation": "create",
+          "description": "Create an advanced filtering component that supports all filter criteria: price range (₹), rating threshold (< 4 stars), review count (< 200), BSR range, monthly revenue range, product weight (lightweight preference), non-branded/private label friendly flag, low FBA seller count, high review growth in last 30 days, and high margin threshold (>30%). Use the AdvancedFilters type from backend interface and call searchProductsByFilters method."
+        },
+        {
+          "path": "frontend/src/hooks/useProductFilters.ts",
+          "operation": "create",
+          "description": "Create a custom hook that manages filter state, combines multiple filters, persists filter state in session storage, and debounces filter changes for performance."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Create keyword research module UI with search volume, difficulty, CPC, trend graph, and suggestions",
+      "acceptanceCriteria": [
+        "Keyword tool shows all specified metrics",
+        "Trend graph displays 12 months of data",
+        "Auto-suggest provides relevant long-tail keyword variations"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/KeywordResearch.tsx",
+          "operation": "create",
+          "description": "Create a keyword research component that displays search volume estimate, keyword difficulty score, CPC estimate, 12-month trend graph, long-tail keyword suggestions, and auto-suggest functionality. Use the KeywordResearchRequest type from backend interface."
+        },
+        {
+          "path": "frontend/src/components/KeywordTrendChart.tsx",
+          "operation": "create",
+          "description": "Create a trend chart component that visualizes 12 months of keyword trend data using Recharts or similar charting library."
+        },
+        {
+          "path": "frontend/src/hooks/useKeywordResearch.ts",
+          "operation": "create",
+          "description": "Create a custom hook that manages keyword search state, fetches keyword data, and handles auto-suggest queries."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Build India-specific profit calculator UI with all cost factors and outputs",
+      "acceptanceCriteria": [
+        "Calculator includes all India-specific cost factors",
+        "Outputs display net profit, ROI percentage, and break-even ACOS",
+        "GST calculations are accurate for Indian tax structure"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ProfitCalculator.tsx",
+          "operation": "create",
+          "description": "Create a profit calculator component that computes Amazon referral fees, FBA fees, GST consideration, shipping cost, packaging cost, and ads budget. Display net profit per unit, ROI percentage, and break-even ACOS. Wire the generated profit-calc-icon.dim_128x128.png image from frontend/public/assets/generated/profit-calc-icon.dim_128x128.png as the calculator icon."
+        },
+        {
+          "path": "frontend/src/utils/profitCalculations.ts",
+          "operation": "create",
+          "description": "Create utility functions for profit calculations including GST calculations for Indian tax structure, Amazon fee calculations, and ROI computations."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Create competitor analysis page displaying top 10 sellers with metrics and weakness detection",
+      "acceptanceCriteria": [
+        "Clicking a product opens competitor analysis view",
+        "Top 10 sellers are ranked and displayed with all metrics",
+        "Weakness detection identifies specific competitive gaps"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/CompetitorAnalysis.tsx",
+          "operation": "create",
+          "description": "Create a competitor analysis page that displays top 10 sellers for a selected product showing average price, average rating, average reviews, listing quality score, and weakness detection (poor images, bad keywords, low review count, high price). Wire the generated competitor-icon.dim_128x128.png image from frontend/public/assets/generated/competitor-icon.dim_128x128.png. Use the SellerAnalysisRequest type from backend interface."
+        },
+        {
+          "path": "frontend/src/components/CompetitorCard.tsx",
+          "operation": "create",
+          "description": "Create a competitor card component that displays individual seller metrics and highlights detected weaknesses with visual indicators."
+        },
+        {
+          "path": "frontend/src/hooks/useCompetitorAnalysis.ts",
+          "operation": "create",
+          "description": "Create a custom hook that fetches and manages competitor analysis data for a selected product."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /competitor-analysis/:productId to wire the CompetitorAnalysis page into the application router."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Design modern dashboard UI with dark mode, visualizations, and sortable product lists",
+      "acceptanceCriteria": [
+        "Dark mode toggle is functional throughout the application",
+        "Category heatmap visualizes opportunity distribution",
+        "All specified chart types render with accurate data",
+        "Users can sort by all specified criteria"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Dashboard.tsx",
+          "operation": "create",
+          "description": "Create the main dashboard page featuring category heatmap visualization, opportunity leaderboard, and sortable product lists. Wire the generated hero-dashboard.dim_1920x1080.png image from frontend/public/assets/generated/hero-dashboard.dim_1920x1080.png as the hero background. Use the authorization component to ensure only authenticated users can access the dashboard."
+        },
+        {
+          "path": "frontend/src/components/CategoryHeatmap.tsx",
+          "operation": "create",
+          "description": "Create a category heatmap visualization component that shows opportunity distribution across categories. Wire the generated category-heatmap.dim_800x600.png placeholder from frontend/public/assets/generated/category-heatmap.dim_800x600.png."
+        },
+        {
+          "path": "frontend/src/components/OpportunityLeaderboard.tsx",
+          "operation": "create",
+          "description": "Create an opportunity leaderboard component that displays top products sorted by opportunity score. Wire the generated opportunity-meter.dim_256x256.png icon from frontend/public/assets/generated/opportunity-meter.dim_256x256.png."
+        },
+        {
+          "path": "frontend/src/components/ProductSortControls.tsx",
+          "operation": "create",
+          "description": "Create sort controls component allowing users to sort products by highest score, highest revenue, lowest competition, and highest growth."
+        },
+        {
+          "path": "frontend/src/components/charts/RevenueBarChart.tsx",
+          "operation": "create",
+          "description": "Create a revenue bar chart component for visualizing product revenue data using a charting library."
+        },
+        {
+          "path": "frontend/src/components/charts/BSRTrendLine.tsx",
+          "operation": "create",
+          "description": "Create a BSR trend line chart component for visualizing Best Seller Rank trends over time."
+        },
+        {
+          "path": "frontend/src/components/charts/ReviewGrowthGraph.tsx",
+          "operation": "create",
+          "description": "Create a review growth graph component for visualizing review count changes over time."
+        },
+        {
+          "path": "frontend/src/components/charts/MarginBreakdown.tsx",
+          "operation": "create",
+          "description": "Create a margin breakdown visualization component showing profit margin components."
+        },
+        {
+          "path": "frontend/src/contexts/ThemeContext.tsx",
+          "operation": "create",
+          "description": "Create a theme context for managing dark mode state across the application."
+        },
+        {
+          "path": "frontend/src/components/ThemeToggle.tsx",
+          "operation": "create",
+          "description": "Create a dark mode toggle component that switches between light and dark themes."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add dark mode CSS variables and styling for the entire application using Tailwind's dark mode utilities."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Configure Tailwind dark mode settings to support class-based dark mode switching."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route for /dashboard to wire the Dashboard page into the application router and wrap the app with ThemeContext provider."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Implement seller alerts notification UI for high-opportunity products and market changes",
+      "acceptanceCriteria": [
+        "Alert system monitors all four trigger conditions",
+        "Notifications are displayed in the UI",
+        "Users can view alert history"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AlertNotifications.tsx",
+          "operation": "create",
+          "description": "Create an alerts notification component that displays alerts for new high-opportunity products, sudden competition drops, trending keywords, and seasonal spikes. Wire the generated alert-bell.dim_96x96.png icon from frontend/public/assets/generated/alert-bell.dim_96x96.png."
+        },
+        {
+          "path": "frontend/src/components/AlertHistory.tsx",
+          "operation": "create",
+          "description": "Create an alert history component that displays past alerts with filtering and search capabilities."
+        },
+        {
+          "path": "frontend/src/hooks/useAlerts.ts",
+          "operation": "create",
+          "description": "Create a custom hook that manages alert state, fetches alerts from user profile alertPreferences, and handles alert acknowledgment."
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Integrate the AlertNotifications component into the main layout header to display alert notifications globally."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Create subscription tier UI with feature gating, CSV export, and saved lists functionality",
+      "acceptanceCriteria": [
+        "Three distinct plan tiers are implemented",
+        "Free tier enforces daily search limits",
+        "CSV export is available for paid users",
+        "Users can save and manage product lists"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/SubscriptionTierBadge.tsx",
+          "operation": "create",
+          "description": "Create a subscription tier badge component that displays the user's current plan (Free, Pro, Premium) using the SubscriptionTier type from backend interface."
+        },
+        {
+          "path": "frontend/src/components/FeatureGate.tsx",
+          "operation": "create",
+          "description": "Create a feature gate component that restricts access to premium features based on user subscription tier."
+        },
+        {
+          "path": "frontend/src/components/SearchLimitIndicator.tsx",
+          "operation": "create",
+          "description": "Create a search limit indicator component that displays remaining daily searches for free tier users."
+        },
+        {
+          "path": "frontend/src/components/CSVExport.tsx",
+          "operation": "create",
+          "description": "Create a CSV export component that allows paid users to export product data to CSV format."
+        },
+        {
+          "path": "frontend/src/components/SavedProductLists.tsx",
+          "operation": "create",
+          "description": "Create a saved product lists component that allows users to create, view, and manage saved product lists using the savedProductLists field from UserProfile."
+        },
+        {
+          "path": "frontend/src/hooks/useSubscription.ts",
+          "operation": "create",
+          "description": "Create a custom hook that manages subscription tier checks, feature access, and search limit tracking."
+        },
+        {
+          "path": "frontend/src/utils/csvExport.ts",
+          "operation": "create",
+          "description": "Create utility functions for generating CSV files from product data."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Add advanced features UI including AI suggestions, suitability scores, and sourcing hints",
+      "acceptanceCriteria": [
+        "Each product displays AI-generated opportunity explanation",
+        "Private label score indicates manufacturing feasibility",
+        "Brand domination and saturation warnings appear when relevant",
+        "Capital requirements are estimated and displayed"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AIOpportunitySuggestion.tsx",
+          "operation": "create",
+          "description": "Create an AI-generated suggestion component that explains why each product is a good opportunity with reasoning and insights."
+        },
+        {
+          "path": "frontend/src/components/PrivateLabelScore.tsx",
+          "operation": "create",
+          "description": "Create a private label suitability score component that indicates manufacturing feasibility for each product."
+        },
+        {
+          "path": "frontend/src/components/MarketWarnings.tsx",
+          "operation": "create",
+          "description": "Create a market warnings component that displays brand domination detection and saturation warnings when relevant."
+        },
+        {
+          "path": "frontend/src/components/CapitalEstimator.tsx",
+          "operation": "create",
+          "description": "Create a capital required estimation component that calculates and displays estimated initial investment needed."
+        },
+        {
+          "path": "frontend/src/components/IndiaSourcingSuggestions.tsx",
+          "operation": "create",
+          "description": "Create an India sourcing suggestions component that provides local manufacturer hints. Wire the generated india-map-icon.dim_128x128.png icon from frontend/public/assets/generated/india-map-icon.dim_128x128.png."
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Design product display card format with all required information fields",
+      "acceptanceCriteria": [
+        "Product cards display all specified information fields",
+        "Recommendation indicator uses clear visual distinction",
+        "Cards are scannable and organized in a grid or list layout"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ProductCard.tsx",
+          "operation": "create",
+          "description": "Create a product display card component showing Product Name, Category, Price, Estimated Sales, Revenue, Competition Level, Opportunity Score (1-100), Net Margin, Trend Status, and Recommendation indicator (YES/AVOID/MODERATE). Wire the generated rising-star-badge.dim_128x128.png badge from frontend/public/assets/generated/rising-star-badge.dim_128x128.png for rising star products. Use the Product type from backend interface and the blob-storage component to display product images via ExternalBlob.getDirectURL()."
+        },
+        {
+          "path": "frontend/src/components/OpportunityScoreMeter.tsx",
+          "operation": "create",
+          "description": "Create an opportunity score meter component that visually displays the 1-100 opportunity score with color coding. Wire the generated opportunity-meter.dim_256x256.png icon from frontend/public/assets/generated/opportunity-meter.dim_256x256.png."
+        },
+        {
+          "path": "frontend/src/components/RecommendationBadge.tsx",
+          "operation": "create",
+          "description": "Create a recommendation badge component that displays YES/AVOID/MODERATE with distinct visual styling (green/red/yellow)."
+        },
+        {
+          "path": "frontend/src/components/ProductGrid.tsx",
+          "operation": "create",
+          "description": "Create a product grid container component that organizes ProductCard components in a responsive grid layout."
+        }
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "summary": "Optimize frontend for Indian seller needs with GST display and performance optimizations",
+      "acceptanceCriteria": [
+        "GST calculations are integrated throughout pricing logic",
+        "Search and filter operations complete in under 3 seconds",
+        "Backend architecture supports millions of product records",
+        "Algorithms account for India-specific market patterns"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/gstCalculations.ts",
+          "operation": "create",
+          "description": "Create utility functions for GST calculations and pricing display following Indian tax structure."
+        },
+        {
+          "path": "frontend/src/utils/formatters.ts",
+          "operation": "create",
+          "description": "Create formatting utility functions for Indian Rupee currency display, number formatting with Indian numbering system (lakhs/crores), and date formatting."
+        },
+        {
+          "path": "frontend/src/hooks/useProductSearch.ts",
+          "operation": "create",
+          "description": "Create an optimized product search hook with debouncing, caching, and performance optimizations to ensure sub-3-second response times."
+        },
+        {
+          "path": "frontend/src/components/LoadingStates.tsx",
+          "operation": "create",
+          "description": "Create loading state components with skeleton screens to improve perceived performance during data fetching."
+        }
+      ]
+    }
+  ]
+}

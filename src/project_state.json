@@ -1,0 +1,209 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Amazon India Seller Opportunity Finder - a full-stack web application for identifying high-demand, low-competition, high-margin products on Amazon.in with real-time data analysis, opportunity scoring, profit calculations, and trend detection across all Amazon India categories",
+  "architectural_notes": [
+    "React/Next.js frontend with Tailwind CSS and Chart.js for visualization",
+    "Node.js or Python backend with scraping engine and daily scheduler",
+    "PostgreSQL or MongoDB for data storage with Redis caching",
+    "Ethical scraping implementation with rotation and captcha handling if API unavailable",
+    "Real-time data processing optimized for <3 sec search response time",
+    "Scalable architecture to handle millions of Amazon.in products",
+    "India-specific business logic for GST, fees, and buying behavior"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Modern dashboard hero background with data analytics theme in warm earth tones (hero-dashboard.dim_1920x1080.png)\n- Category heatmap placeholder visualization showing product opportunity distribution (category-heatmap.dim_800x600.png)\n- Opportunity score meter icon in green-to-red gradient (opportunity-meter.dim_256x256.png)\n- India map outline icon for seller localization features (india-map-icon.dim_128x128.png)\n- Rising star badge icon in gold with sparkle effect (rising-star-badge.dim_128x128.png)\n- Profit calculator icon with rupee symbol and calculator imagery (profit-calc-icon.dim_128x128.png)\n- Competitor analysis icon showing multiple seller profiles (competitor-icon.dim_128x128.png)\n- Alert bell icon with notification dot (alert-bell.dim_96x96.png)",
+  "existing_features": [
+    {
+      "id": "feature-support-all-amazon-in-product-categories-including-electronics-home-kitchen-beauty-grocery-fashion-automotive-industrial-toys-baby-health-books-pet-supplies-office-sports-handmade-luxury-and-emerging-categories-with-category-filter-and-subcategory-drill-down-navigation",
+      "title": "Support all Amazon.in product categories including: Electronics, Home & Kitchen, Beauty, Grocery, Fashion, Automotive, Industrial, Toys, Baby, Health, Books, Pet Supplies, Office, Sports, Handmade, Luxury, and emerging categories with category filter and subcategory drill-down navigation",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-advanced-filtering-system-allowing-users-to-filter-by-price-range-rating-threshold-4-stars-review-count-200-bsr-range-monthly-revenue-range-product-weight-with-lightweight-preference-non-branded-private-label-friendly-flag-low-fba-seller-count-high-review-growth-in-last-30-days-and-high-margin-threshold-30",
+      "title": "Create advanced filtering system allowing users to filter by: price range (₹), rating threshold (< 4 stars), review count (< 200), BSR range, monthly revenue range, product weight (with lightweight preference), non-branded/private label friendly flag, low FBA seller count, high review growth in last 30 days, and high margin threshold (>30%)",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-keyword-research-module-displaying-search-volume-estimate-keyword-difficulty-score-cpc-cost-per-click-estimate-12-month-trend-graph-long-tail-keyword-suggestions-and-auto-suggest-functionality-derived-from-amazon-search-patterns",
+      "title": "Build keyword research module displaying: search volume estimate, keyword difficulty score, CPC (cost-per-click) estimate, 12-month trend graph, long-tail keyword suggestions, and auto-suggest functionality derived from Amazon search patterns",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-india-specific-profit-calculator-that-computes-amazon-referral-fees-fba-fees-gst-consideration-shipping-cost-packaging-cost-and-ads-budget-outputs-net-profit-per-unit-roi-percentage-and-break-even-acos-advertising-cost-of-sale",
+      "title": "Create India-specific profit calculator that computes: Amazon referral fees, FBA fees, GST consideration, shipping cost, packaging cost, and ads budget; outputs net profit per unit, ROI percentage, and break-even ACOS (Advertising Cost of Sale)",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-competitor-analysis-page-that-displays-top-10-sellers-for-a-selected-product-showing-average-price-average-rating-average-reviews-listing-quality-score-and-weakness-detection-poor-images-bad-keywords-low-review-count-high-price",
+      "title": "Build competitor analysis page that displays top 10 sellers for a selected product showing: average price, average rating, average reviews, listing quality score, and weakness detection (poor images, bad keywords, low review count, high price)",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-modern-dashboard-ui-with-dark-mode-support-featuring-category-heatmap-visualization-opportunity-leaderboard-sortable-product-lists-by-highest-score-highest-revenue-lowest-competition-highest-growth-and-interactive-charts-including-revenue-bar-charts-bsr-trend-lines-review-growth-graphs-and-margin-breakdown-visualizations",
+      "title": "Design modern dashboard UI with dark mode support featuring: category heatmap visualization, opportunity leaderboard, sortable product lists (by highest score, highest revenue, lowest competition, highest growth), and interactive charts including revenue bar charts, BSR trend lines, review growth graphs, and margin breakdown visualizations",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-seller-alerts-notification-system-that-triggers-alerts-for-new-high-opportunity-products-discovered-sudden-drops-in-competition-levels-trending-keyword-emergence-and-seasonal-demand-spikes",
+      "title": "Implement seller alerts notification system that triggers alerts for: new high-opportunity products discovered, sudden drops in competition levels, trending keyword emergence, and seasonal demand spikes",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-monetization-tier-system-with-free-plan-limited-searches-per-day-pro-plan-and-premium-plan-include-features-for-data-export-to-csv-saved-product-lists-and-email-alert-delivery-for-paid-tiers",
+      "title": "Create monetization tier system with Free plan (limited searches per day), Pro plan, and Premium plan; include features for data export to CSV, saved product lists, and email alert delivery for paid tiers",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-product-display-card-format-showing-product-name-category-price-estimated-sales-revenue-competition-level-opportunity-score-1-100-net-margin-trend-status-and-recommendation-indicator-yes-avoid-moderate",
+      "title": "Design product display card format showing: Product Name, Category, Price, Estimated Sales, Revenue, Competition Level, Opportunity Score (1-100), Net Margin, Trend Status, and Recommendation indicator (YES/AVOID/MODERATE)",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-optimize-application-for-indian-seller-needs-by-handling-gst-pricing-structure-considering-indian-buying-behavior-patterns-in-algorithms-ensuring-scalability-for-millions-of-product-records-and-maintaining-search-response-time-under-3-seconds",
+      "title": "Optimize application for Indian seller needs by handling GST pricing structure, considering Indian buying behavior patterns in algorithms, ensuring scalability for millions of product records, and maintaining search response time under 3 seconds",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Real-time Amazon.in data scraping/API integration with product details, BSR, and sales estimates",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Proprietary Opportunity Score algorithm (1-100) based on demand, competition, growth, and margin potential",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Category coverage for all Amazon.in segments with filter and drill-down capability",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Advanced filtering system (price, rating, reviews, BSR, revenue, weight, margin, seller type)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Keyword research module with search volume, difficulty, CPC, trends, and long-tail suggestions",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Trend detection system for review growth, price increases, seasonal spikes, and Rising Star badges",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "India-specific profit calculator with Amazon fees, FBA, GST, shipping, packaging, and ads ROI",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Competitor analysis page with top sellers, weakness detection, and listing quality scoring",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Modern dashboard UI with dark mode, heatmaps, leaderboards, charts, and multi-sort capabilities",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Seller alerts system for new opportunities, competition drops, trending keywords, and seasonal spikes",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Monetization tiers (Free/Pro/Premium) with data export, saved lists, and email alerts",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Bonus features: AI suggestions, private label scoring, brand domination detection, capital estimation, India sourcing hints",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Create backend data model for storing Amazon.in product information including: product title, category, subcategory, price, MRP, rating, number of reviews, BSR (Best Seller Rank), seller type (FBA/Easy Ship/Seller Fulfilled), brand, estimated monthly sales, and stock availability",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Implement proprietary Opportunity Score algorithm (1-100 scale) calculated as: (Demand Score × Growth Score × Margin Potential) ÷ Competition Score, where Demand Score is based on BSR, review velocity, and sales estimate; Competition Score considers number of sellers, average reviews, brand dominance, and sponsored listing density; Growth Score tracks trending keywords, recent review spikes, and price growth; Margin Potential calculates selling price minus Amazon fees and estimated sourcing cost",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Implement trend detection system that identifies: products with sudden review growth spikes, price increase trends, seasonal demand patterns, and automatically assigns 'Rising Star' badge to qualifying products",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Add bonus advanced features including: AI-generated suggestion explaining why each product is a good opportunity, private label suitability score, brand domination detection, market saturation warnings, estimated capital required calculation, and India sourcing suggestions with local manufacturer hints",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Amazon India Seller Opportunity Finder",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

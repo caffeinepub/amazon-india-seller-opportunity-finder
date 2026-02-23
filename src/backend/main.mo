@@ -1,14 +1,7 @@
 import Map "mo:core/Map";
 import Array "mo:core/Array";
 import Time "mo:core/Time";
-import List "mo:core/List";
 import Text "mo:core/Text";
-import Order "mo:core/Order";
-import Iter "mo:core/Iter";
-import Timer "mo:core/Timer";
-import Int "mo:core/Int";
-import Nat "mo:core/Nat";
-import Float "mo:core/Float";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import AccessControl "authorization/access-control";
@@ -33,7 +26,7 @@ actor {
     mrp : Float;
     rating : Float;
     reviewCount : Nat;
-    bsr : Nat; // Best Seller Rank
+    bsr : Nat;
     estimatedMonthlySales : Nat;
     brand : Text;
     sellerType : SellerType;
@@ -74,7 +67,9 @@ actor {
     images : [Storage.ExternalBlob];
   };
 
-  public type AdvancedFilters = {
+  public type ProductSearchFilters = {
+    category : ?Text;
+    subcategory : ?Text;
     priceRange : ?(Float, Float);
     ratingThreshold : ?Float;
     reviewCountMax : ?Nat;
@@ -85,6 +80,11 @@ actor {
     lowFBACount : Bool;
     highReviewGrowth : Bool;
     highMarginThreshold : Bool;
+  };
+
+  public type OpportunityScoreFilters = {
+    minScore : Float;
+    category : ?Text;
   };
 
   public type KeywordResearch = {
@@ -139,7 +139,6 @@ actor {
   let products = Map.empty<ProductId, Product>();
   let userProfiles = Map.empty<Principal, UserProfile>();
 
-  // User Profile Management Functions
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can view profiles");
@@ -161,7 +160,6 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Product Management Functions
   public shared ({ caller }) func addProduct(productRequest : ProductAddRequest) : async ProductId {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Only admins can add products");
@@ -202,31 +200,68 @@ actor {
     };
   };
 
-  public shared ({ caller }) func searchProductsByCategory(category : Text) : async [Product] {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can search products");
-    };
-    products.values().toArray().filter(
-      func(product : Product) : Bool {
-        product.category.toLower() == category.toLower();
-      }
-    );
+  public type ProductSearchResult = {
+    #success : [Product];
+    #error : Text;
   };
 
-  public shared ({ caller }) func searchProductsByFilters(filters : AdvancedFilters) : async [Product] {
+  public query ({ caller }) func searchProducts(filters : ProductSearchFilters) : async ProductSearchResult {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can search products");
     };
 
-    products.values().toArray().filter(
-      func(product : Product) : Bool {
-        applyPriceRange(product, filters.priceRange) and
-        applyRatingThreshold(product, filters.ratingThreshold) and
-        applyReviewCountMax(product, filters.reviewCountMax) and
-        applyBSRRange(product, filters.bsrRange) and
-        applyMarginThreshold(product, filters.highMarginThreshold)
+    let productArray = products.values().toArray();
+
+    // If all filters are null or default, return all products
+    if (allFiltersDefault(filters)) {
+      return #success(productArray);
+    };
+
+    let filteredProducts = productArray.filter(
+      func(p) {
+        let categoryMatch = applyCategory(p, filters.category);
+        let subcategoryMatch = applySubcategory(p, filters.subcategory);
+        let priceRangeMatch = applyPriceRange(p, filters.priceRange);
+        let ratingThresholdMatch = applyRatingThreshold(p, filters.ratingThreshold);
+        let reviewCountMatch = applyReviewCountMax(p, filters.reviewCountMax);
+        let bsrRangeMatch = applyBSRRange(p, filters.bsrRange);
+        let monthlyRevenueMatch = applyMonthlyRevenueRange(p, filters.monthlyRevenueRange);
+        let marginThresholdMatch = applyMarginThreshold(p, filters.highMarginThreshold);
+
+        categoryMatch and subcategoryMatch and priceRangeMatch and ratingThresholdMatch and reviewCountMatch and bsrRangeMatch and monthlyRevenueMatch and marginThresholdMatch;
       }
     );
+
+    #success(filteredProducts);
+  };
+
+  func allFiltersDefault(filters : ProductSearchFilters) : Bool {
+    filters.category == null and
+    filters.subcategory == null and
+    filters.priceRange == null and
+    filters.ratingThreshold == null and
+    filters.reviewCountMax == null and
+    filters.bsrRange == null and
+    filters.monthlyRevenueRange == null and
+    not filters.lightweightPreference and
+    not filters.nonBrandedFriendly and
+    not filters.lowFBACount and
+    not filters.highReviewGrowth and
+    not filters.highMarginThreshold
+  };
+
+  func applyCategory(product : Product, category : ?Text) : Bool {
+    switch (category) {
+      case (null) { true };
+      case (?cat) { product.category.toLower() == cat.toLower() };
+    };
+  };
+
+  func applySubcategory(product : Product, subcategory : ?Text) : Bool {
+    switch (subcategory) {
+      case (null) { true };
+      case (?subcat) { product.subcategory.toLower() == subcat.toLower() };
+    };
   };
 
   func applyPriceRange(product : Product, priceRange : ?(Float, Float)) : Bool {
@@ -241,7 +276,7 @@ actor {
   func applyRatingThreshold(product : Product, ratingThreshold : ?Float) : Bool {
     switch (ratingThreshold) {
       case (null) { true };
-      case (?threshold) { product.rating <= threshold };
+      case (?threshold) { product.rating >= threshold };
     };
   };
 
@@ -261,11 +296,21 @@ actor {
     };
   };
 
+  func applyMonthlyRevenueRange(product : Product, monthlyRevenueRange : ?(Float, Float)) : Bool {
+    switch (monthlyRevenueRange) {
+      case (null) { true };
+      case (?(min, max)) {
+        let monthlyRevenue = product.price * product.estimatedMonthlySales.toFloat();
+        monthlyRevenue >= min and monthlyRevenue <= max
+      };
+    };
+  };
+
   func applyMarginThreshold(product : Product, highMarginThreshold : Bool) : Bool {
     if (not highMarginThreshold) { true } else { product.margin >= 0.3 };
   };
 
-  public shared ({ caller }) func getOpportunityScore(productId : Text) : async OpportunityScore {
+  public query ({ caller }) func getOpportunityScore(productId : Text) : async OpportunityScore {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can view opportunity scores");
     };
@@ -362,7 +407,6 @@ actor {
       Runtime.trap("Unauthorized: Only users can save keyword research");
     };
 
-    // Implementation would store keyword research data
     ignore request;
   };
 
@@ -405,22 +449,34 @@ actor {
     await processProductUpdates();
   };
 
-  public shared ({ caller }) func getAllProducts() : async [Product] {
+  public query ({ caller }) func getAllProducts() : async [Product] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can view all products");
     };
     products.values().toArray();
   };
 
-  public query ({ caller }) func getOpportunities(category : Text) : async [Product] {
+  public query ({ caller }) func getOpportunityScoreFiltered(filters : OpportunityScoreFilters) : async [Product] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can view opportunities");
     };
+
     products.values().toArray().filter(
       func(product : Product) : Bool {
-        product.category.toLower() == category.toLower();
+        applyOpportunityFilters(product, filters);
       }
     );
+  };
+
+  func applyOpportunityFilters(product : Product, filters : OpportunityScoreFilters) : Bool {
+    let score = calculateOpportunityScore(product).score;
+    if (score < filters.minScore) { return false };
+    switch (filters.category) {
+      case (null) { true };
+      case (?cat) {
+        product.category.toLower() == cat.toLower();
+      };
+    };
   };
 
   func processProductUpdates() : async () {
@@ -430,12 +486,10 @@ actor {
         currentTime - product.lastModified > 24 * 60 * 60 * 1000000000
       }
     );
-    // Process updates for outdated products
   };
 
-  // System initialization
   system func timer(setGlobalTimer : Nat64 -> ()) : async () {
-    let next = Nat64.fromIntWrap(Time.now()) + 3_600_000_000_000; // 1 hour
+    let next = Nat64.fromIntWrap(Time.now()) + 3_600_000_000_000;
     setGlobalTimer(next);
     await processProductUpdates();
   };

@@ -14,25 +14,31 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
-export interface UserProfile {
-    name: string;
-    subscriptionTier: SubscriptionTier;
-    alertPreferences: Array<string>;
-    savedProductLists: Array<string>;
-    email: string;
+export interface Product {
+    id: ProductId;
+    bsr: bigint;
+    mrp: number;
+    title: string;
+    subcategory: string;
+    estimatedMonthlySales: bigint;
+    lastModified: Time;
+    sellerType: SellerType;
+    availableStock: bigint;
+    category: string;
+    brand: string;
+    margin: number;
+    rating: number;
+    price: number;
+    reviewCount: bigint;
+    images: Array<ExternalBlob>;
 }
-export interface AdvancedFilters {
-    lowFBACount: boolean;
-    nonBrandedFriendly: boolean;
-    ratingThreshold?: number;
-    priceRange?: [number, number];
-    monthlyRevenueRange?: [number, number];
-    highMarginThreshold: boolean;
-    bsrRange?: [bigint, bigint];
-    lightweightPreference: boolean;
-    reviewCountMax?: bigint;
-    highReviewGrowth: boolean;
-}
+export type ProductSearchResult = {
+    __kind__: "error";
+    error: string;
+} | {
+    __kind__: "success";
+    success: Array<Product>;
+};
 export interface ProductTrend {
     risingStar: boolean;
     reviewGrowthSpike: boolean;
@@ -40,6 +46,20 @@ export interface ProductTrend {
     seasonalDemandPattern: boolean;
 }
 export type Time = bigint;
+export interface ProductSearchFilters {
+    lowFBACount: boolean;
+    subcategory?: string;
+    nonBrandedFriendly: boolean;
+    ratingThreshold?: number;
+    priceRange?: [number, number];
+    monthlyRevenueRange?: [number, number];
+    highMarginThreshold: boolean;
+    bsrRange?: [bigint, bigint];
+    lightweightPreference: boolean;
+    category?: string;
+    reviewCountMax?: bigint;
+    highReviewGrowth: boolean;
+}
 export interface SellerAnalysisRequest {
     averagePrice?: number;
     averageReviews?: bigint;
@@ -63,6 +83,10 @@ export interface ProductAddRequest {
     reviewCount: bigint;
     images: Array<ExternalBlob>;
 }
+export interface OpportunityScoreFilters {
+    minScore: number;
+    category?: string;
+}
 export interface OpportunityScore {
     growthScore: number;
     competitionScore: number;
@@ -77,23 +101,12 @@ export interface KeywordResearchRequest {
     cpcEstimate?: number;
 }
 export type ProductId = string;
-export interface Product {
-    id: ProductId;
-    bsr: bigint;
-    mrp: number;
-    title: string;
-    subcategory: string;
-    estimatedMonthlySales: bigint;
-    lastModified: Time;
-    sellerType: SellerType;
-    availableStock: bigint;
-    category: string;
-    brand: string;
-    margin: number;
-    rating: number;
-    price: number;
-    reviewCount: bigint;
-    images: Array<ExternalBlob>;
+export interface UserProfile {
+    name: string;
+    subscriptionTier: SubscriptionTier;
+    alertPreferences: Array<string>;
+    savedProductLists: Array<string>;
+    email: string;
 }
 export enum SellerType {
     fba = "fba",
@@ -117,8 +130,8 @@ export interface backendInterface {
     getAllProducts(): Promise<Array<Product>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
-    getOpportunities(category: string): Promise<Array<Product>>;
     getOpportunityScore(productId: string): Promise<OpportunityScore>;
+    getOpportunityScoreFiltered(filters: OpportunityScoreFilters): Promise<Array<Product>>;
     getProduct(id: ProductId): Promise<Product>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
@@ -126,6 +139,5 @@ export interface backendInterface {
     saveKeywordResearch(request: KeywordResearchRequest): Promise<void>;
     saveProductTrends(productId: string, trend: ProductTrend): Promise<void>;
     saveSellerAnalysis(request: SellerAnalysisRequest): Promise<void>;
-    searchProductsByCategory(category: string): Promise<Array<Product>>;
-    searchProductsByFilters(filters: AdvancedFilters): Promise<Array<Product>>;
+    searchProducts(filters: ProductSearchFilters): Promise<ProductSearchResult>;
 }

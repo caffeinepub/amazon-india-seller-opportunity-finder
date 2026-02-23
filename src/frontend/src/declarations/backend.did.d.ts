@@ -10,18 +10,6 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface AdvancedFilters {
-  'lowFBACount' : boolean,
-  'nonBrandedFriendly' : boolean,
-  'ratingThreshold' : [] | [number],
-  'priceRange' : [] | [[number, number]],
-  'monthlyRevenueRange' : [] | [[number, number]],
-  'highMarginThreshold' : boolean,
-  'bsrRange' : [] | [[bigint, bigint]],
-  'lightweightPreference' : boolean,
-  'reviewCountMax' : [] | [bigint],
-  'highReviewGrowth' : boolean,
-}
 export type ExternalBlob = Uint8Array;
 export interface KeywordResearchRequest {
   'searchVolumeEstimate' : [] | [bigint],
@@ -35,6 +23,10 @@ export interface OpportunityScore {
   'score' : number,
   'demandScore' : number,
   'marginScore' : number,
+}
+export interface OpportunityScoreFilters {
+  'minScore' : number,
+  'category' : [] | [string],
 }
 export interface Product {
   'id' : ProductId,
@@ -71,6 +63,22 @@ export interface ProductAddRequest {
   'images' : Array<ExternalBlob>,
 }
 export type ProductId = string;
+export interface ProductSearchFilters {
+  'lowFBACount' : boolean,
+  'subcategory' : [] | [string],
+  'nonBrandedFriendly' : boolean,
+  'ratingThreshold' : [] | [number],
+  'priceRange' : [] | [[number, number]],
+  'monthlyRevenueRange' : [] | [[number, number]],
+  'highMarginThreshold' : boolean,
+  'bsrRange' : [] | [[bigint, bigint]],
+  'lightweightPreference' : boolean,
+  'category' : [] | [string],
+  'reviewCountMax' : [] | [bigint],
+  'highReviewGrowth' : boolean,
+}
+export type ProductSearchResult = { 'error' : string } |
+  { 'success' : Array<Product> };
 export interface ProductTrend {
   'risingStar' : boolean,
   'reviewGrowthSpike' : boolean,
@@ -135,8 +143,11 @@ export interface _SERVICE {
   'getAllProducts' : ActorMethod<[], Array<Product>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
-  'getOpportunities' : ActorMethod<[string], Array<Product>>,
   'getOpportunityScore' : ActorMethod<[string], OpportunityScore>,
+  'getOpportunityScoreFiltered' : ActorMethod<
+    [OpportunityScoreFilters],
+    Array<Product>
+  >,
   'getProduct' : ActorMethod<[ProductId], Product>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
@@ -144,8 +155,7 @@ export interface _SERVICE {
   'saveKeywordResearch' : ActorMethod<[KeywordResearchRequest], undefined>,
   'saveProductTrends' : ActorMethod<[string, ProductTrend], undefined>,
   'saveSellerAnalysis' : ActorMethod<[SellerAnalysisRequest], undefined>,
-  'searchProductsByCategory' : ActorMethod<[string], Array<Product>>,
-  'searchProductsByFilters' : ActorMethod<[AdvancedFilters], Array<Product>>,
+  'searchProducts' : ActorMethod<[ProductSearchFilters], ProductSearchResult>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

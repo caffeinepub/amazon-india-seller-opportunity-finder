@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 11,
   "summary": "Amazon India Seller Opportunity Finder - a full-stack web application for identifying high-demand, low-competition, high-margin products on Amazon.in with real-time data analysis, opportunity scoring, profit calculations, and trend detection across all Amazon India categories",
   "architectural_notes": [
     "React/Next.js frontend with Tailwind CSS and Chart.js for visualization",
@@ -11,9 +11,10 @@
     "Scalable architecture to handle millions of Amazon.in products",
     "India-specific business logic for GST, fees, and buying behavior"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Modern dashboard hero background with data analytics theme in warm earth tones (hero-dashboard.dim_1920x1080.png)\n- Category heatmap placeholder visualization showing product opportunity distribution (category-heatmap.dim_800x600.png)\n- Opportunity score meter icon in green-to-red gradient (opportunity-meter.dim_256x256.png)\n- India map outline icon for seller localization features (india-map-icon.dim_128x128.png)\n- Rising star badge icon in gold with sparkle effect (rising-star-badge.dim_128x128.png)\n- Profit calculator icon with rupee symbol and calculator imagery (profit-calc-icon.dim_128x128.png)\n- Competitor analysis icon showing multiple seller profiles (competitor-icon.dim_128x128.png)\n- Alert bell icon with notification dot (alert-bell.dim_96x96.png)",
+  "known_issues": [
+    "Filter functionality triggers 'Something went wrong!' error message instead of returning products - requires proper error handling and backend search logic fixes"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-support-all-amazon-in-product-categories-including-electronics-home-kitchen-beauty-grocery-fashion-automotive-industrial-toys-baby-health-books-pet-supplies-office-sports-handmade-luxury-and-emerging-categories-with-category-filter-and-subcategory-drill-down-navigation",
@@ -92,6 +93,142 @@
       "title": "Optimize application for Indian seller needs by handling GST pricing structure, considering Indian buying behavior patterns in algorithms, ensuring scalability for millions of product records, and maintaining search response time under 3 seconds",
       "reqIds": [
         "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-advanced-filters-in-frontend-src-hooks-useproductfilters-ts-and-frontend-src-components-productgrid-tsx-to-ensure-filtered-products-are-correctly-returned-and-displayed-when-any-filter-criteria-price-range-rating-threshold-review-count-bsr-range-monthly-revenue-range-lightweight-preference-non-branded-flag-low-fba-seller-count-high-review-growth-high-margin-threshold-is-applied",
+      "title": "Debug and fix the advanced filters in frontend/src/hooks/useProductFilters.ts and frontend/src/components/ProductGrid.tsx to ensure filtered products are correctly returned and displayed when any filter criteria (price range, rating threshold, review count, BSR range, monthly revenue range, lightweight preference, non-branded flag, low FBA seller count, high review growth, high margin threshold) is applied",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-usequeries-ts-hook-s-searchproducts-mutation-correctly-passes-filter-parameters-to-the-backend-actor-and-that-the-backend-main-mo-searchproducts-method-properly-filters-products-based-on-all-provided-criteria-including-price-range-rating-threshold-review-count-limits-bsr-range-revenue-estimates-weight-preferences-and-boolean-flags",
+      "title": "Verify that the useQueries.ts hook's searchProducts mutation correctly passes filter parameters to the backend actor and that the backend main.mo searchProducts method properly filters products based on all provided criteria including price range, rating threshold, review count limits, BSR range, revenue estimates, weight preferences, and boolean flags",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-console-logging-or-debug-output-in-the-productgrid-component-and-useproductfilters-hook-to-trace-filter-application-including-the-active-filter-state-number-of-products-before-filtering-number-after-filtering-and-any-errors-encountered-during-the-filtering-process",
+      "title": "Add console logging or debug output in the ProductGrid component and useProductFilters hook to trace filter application, including the active filter state, number of products before filtering, number after filtering, and any errors encountered during the filtering process",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-and-fix-the-productgrid-component-in-frontend-src-components-productgrid-tsx-to-ensure-products-are-displayed-when-filters-are-applied-checking-that-the-filteredproducts-array-is-correctly-populated-and-passed-to-the-rendering-logic",
+      "title": "Investigate and fix the ProductGrid component in frontend/src/components/ProductGrid.tsx to ensure products are displayed when filters are applied, checking that the filteredProducts array is correctly populated and passed to the rendering logic",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-the-useproductfilters-hook-in-frontend-src-hooks-useproductfilters-ts-to-verify-filter-state-is-correctly-managed-and-applied-ensuring-all-filter-parameters-category-price-range-rating-threshold-review-count-bsr-range-monthly-revenue-range-lightweight-preference-non-branded-flag-low-fba-seller-count-high-review-growth-high-margin-threshold-are-properly-tracked-and-used",
+      "title": "Debug the useProductFilters hook in frontend/src/hooks/useProductFilters.ts to verify filter state is correctly managed and applied, ensuring all filter parameters (category, price range, rating threshold, review count, BSR range, monthly revenue range, lightweight preference, non-branded flag, low FBA seller count, high review growth, high margin threshold) are properly tracked and used",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-the-searchproducts-mutation-in-frontend-src-hooks-usequeries-ts-correctly-passes-all-filter-parameters-to-the-backend-actor-and-handles-the-response-properly-ensuring-the-returned-products-are-accessible-to-components",
+      "title": "Verify the searchProducts mutation in frontend/src/hooks/useQueries.ts correctly passes all filter parameters to the backend actor and handles the response properly, ensuring the returned products are accessible to components",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-console-logging-throughout-the-filter-flow-including-filter-state-changes-in-useproductfilters-filter-parameters-sent-to-backend-in-usequeries-products-received-from-backend-and-filtered-products-array-in-productgrid-component-to-enable-debugging-of-the-filter-issue",
+      "title": "Add comprehensive console logging throughout the filter flow including: filter state changes in useProductFilters, filter parameters sent to backend in useQueries, products received from backend, and filtered products array in ProductGrid component to enable debugging of the filter issue",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-advancedfilters-component-in-frontend-src-components-advancedfilters-tsx-correctly-triggers-filter-updates-and-that-all-filter-inputs-properly-update-the-filter-state-in-useproductfilters-hook",
+      "title": "Ensure the AdvancedFilters component in frontend/src/components/AdvancedFilters.tsx correctly triggers filter updates and that all filter inputs properly update the filter state in useProductFilters hook",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-try-catch-error-handling-in-the-searchproducts-mutation-in-frontend-src-hooks-usequeries-ts-to-capture-and-log-the-actual-error-details-from-the-backend-including-error-type-message-and-stack-trace",
+      "title": "Add comprehensive try-catch error handling in the searchProducts mutation in frontend/src/hooks/useQueries.ts to capture and log the actual error details from the backend, including error type, message, and stack trace",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-console-logging-in-the-productgrid-component-in-frontend-src-components-productgrid-tsx-before-and-after-filter-application-logging-the-raw-products-array-length-filtered-products-array-length-active-filter-state-and-any-errors-during-rendering",
+      "title": "Add detailed console logging in the ProductGrid component in frontend/src/components/ProductGrid.tsx before and after filter application, logging the raw products array length, filtered products array length, active filter state, and any errors during rendering",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-debug-logging-in-the-useproductfilters-hook-in-frontend-src-hooks-useproductfilters-ts-to-log-every-filter-state-change-including-the-parameter-name-old-value-new-value-and-complete-filter-object-after-update",
+      "title": "Add debug logging in the useProductFilters hook in frontend/src/hooks/useProductFilters.ts to log every filter state change, including the parameter name, old value, new value, and complete filter object after update",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-logging-in-the-advancedfilters-component-in-frontend-src-components-advancedfilters-tsx-when-the-apply-button-is-clicked-logging-all-local-filter-values-being-applied-and-confirmation-that-the-filter-hook-was-updated",
+      "title": "Add detailed logging in the AdvancedFilters component in frontend/src/components/AdvancedFilters.tsx when the Apply button is clicked, logging all local filter values being applied and confirmation that the filter hook was updated",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-and-fix-the-data-type-handling-for-bigint-fields-reviewcountmax-bsrrange-in-the-searchproducts-mutation-in-frontend-src-hooks-usequeries-ts-to-ensure-they-are-correctly-serialized-and-sent-to-the-backend-actor",
+      "title": "Verify and fix the data type handling for bigint fields (reviewCountMax, bsrRange) in the searchProducts mutation in frontend/src/hooks/useQueries.ts to ensure they are correctly serialized and sent to the backend actor",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-detailed-error-display-component-in-the-productgrid-that-shows-the-actual-error-message-and-filter-state-when-something-went-wrong-occurs-replacing-the-generic-error-alert-with-specific-debugging-information",
+      "title": "Add a detailed error display component in the ProductGrid that shows the actual error message and filter state when 'Something went wrong!' occurs, replacing the generic error alert with specific debugging information",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-and-resolve-the-something-went-wrong-error-appearing-in-the-draft-preview-by-examining-the-productgrid-component-s-error-handling-logic-the-searchproducts-query-response-handling-in-usequeries-ts-and-the-backend-searchproducts-method-to-identify-the-root-cause-of-the-failure",
+      "title": "Investigate and resolve the 'Something went wrong!' error appearing in the draft preview by examining the ProductGrid component's error handling logic, the searchProducts query response handling in useQueries.ts, and the backend searchProducts method to identify the root cause of the failure",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-fallback-error-recovery-in-the-productgrid-component-in-frontend-src-components-productgrid-tsx-to-handle-cases-where-the-searchproducts-query-fails-displaying-a-user-friendly-error-message-with-actionable-troubleshooting-steps-instead-of-the-generic-something-went-wrong-message",
+      "title": "Add fallback error recovery in the ProductGrid component in frontend/src/components/ProductGrid.tsx to handle cases where the searchProducts query fails, displaying a user-friendly error message with actionable troubleshooting steps instead of the generic 'Something went wrong!' message",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-initialization-error-detection-in-the-useactor-hook-in-frontend-src-hooks-useactor-ts-to-catch-and-report-cases-where-the-backend-actor-fails-to-initialize-or-becomes-unavailable-which-could-cause-the-something-went-wrong-error",
+      "title": "Add initialization error detection in the useActor hook in frontend/src/hooks/useActor.ts to catch and report cases where the backend actor fails to initialize or becomes unavailable, which could cause the 'Something went wrong!' error",
+      "reqIds": [
+        "REQ-35"
       ],
       "version": 1
     }
@@ -198,6 +335,38 @@
       "summary": "Add bonus advanced features including: AI-generated suggestion explaining why each product is a good opportunity, private label suitability score, brand domination detection, market saturation warnings, estimated capital required calculation, and India sourcing suggestions with local manufacturer hints",
       "reqIds": [
         "REQ-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Review and fix the backend searchProducts method in backend/main.mo to ensure it correctly applies all filter criteria and returns matching products, checking that the filtering logic handles all parameters including price range, rating threshold, review count limits, BSR range, revenue estimates, weight preferences, and boolean flags",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Add detailed error handling in the backend searchProducts method in backend/main.mo to catch and return specific error messages when filter operations fail, including parameter validation errors, data type conversion errors, and filtering logic errors",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-34",
+      "summary": "Fix the backend searchProducts method in backend/main.mo to ensure null/None filter values are handled gracefully and do not cause filtering to fail, treating null values as 'no constraint' for that filter parameter",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "Verify that the backend searchProducts method in backend/main.mo returns a valid response structure even when no filters are applied, ensuring the default case returns all products without errors",
+      "reqIds": [
+        "REQ-34"
       ],
       "status": "pending"
     }

@@ -1,308 +1,91 @@
 {
   "kind": "build_request",
-  "title": "Amazon India Seller Opportunity Finder - Full-Stack Product Research Platform",
-  "projectName": "Amazon India Seller Opportunity Finder",
-  "priority": "normal",
+  "title": "Fix 'Something went wrong!' error in draft preview",
+  "projectName": "Amazon Seller Opportunity Finder",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Create backend data model for storing Amazon.in product information including: product title, category, subcategory, price, MRP, rating, number of reviews, BSR (Best Seller Rank), seller type (FBA/Easy Ship/Seller Fulfilled), brand, estimated monthly sales, and stock availability",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Extract: Product title, Category & subcategory, Price, MRP, Rating, Number of reviews, BSR (Best Seller Rank), Seller type (FBA / Easy Ship / Seller Fulfilled), Brand, Estimated monthly sales (calculate via BSR model), Stock availability"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend stores complete product records with all specified fields",
-        "Data model supports BSR ranking and sales estimation",
-        "Seller type is categorized as FBA, Easy Ship, or Seller Fulfilled"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Implement proprietary Opportunity Score algorithm (1-100 scale) calculated as: (Demand Score × Growth Score × Margin Potential) ÷ Competition Score, where Demand Score is based on BSR, review velocity, and sales estimate; Competition Score considers number of sellers, average reviews, brand dominance, and sponsored listing density; Growth Score tracks trending keywords, recent review spikes, and price growth; Margin Potential calculates selling price minus Amazon fees and estimated sourcing cost",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Create a proprietary 'Opportunity Score' based on: Opportunity Score = (High Demand Score × Growth Score × Margin Potential) ÷ Competition Score",
-          "Show score from 1–100"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Algorithm calculates score from 1 to 100 for each product",
-        "Score incorporates all four factors: demand, competition, growth, and margin",
-        "Score updates when underlying data changes"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Support all Amazon.in product categories including: Electronics, Home & Kitchen, Beauty, Grocery, Fashion, Automotive, Industrial, Toys, Baby, Health, Books, Pet Supplies, Office, Sports, Handmade, Luxury, and emerging categories with category filter and subcategory drill-down navigation",
+      "id": "REQ-32",
+      "text": "Investigate and resolve the 'Something went wrong!' error appearing in the draft preview by examining the ProductGrid component's error handling logic, the searchProducts query response handling in useQueries.ts, and the backend searchProducts method to identify the root cause of the failure",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-user-final"
         ],
         "quotes": [
-          "Must include: Electronics, Home & Kitchen, Beauty, Grocery, Fashion, Automotive, Industrial, Toys, Baby, Health, Books, Pet Supplies, Office, Sports, Handmade, Luxury, Emerging categories",
-          "Allow category filter + subcategory drill-down"
+          "In draft preview showing this meaasge"
         ]
       },
       "acceptanceCriteria": [
-        "All listed categories are available for filtering",
-        "Users can drill down into subcategories",
-        "Category hierarchy is navigable in the UI"
+        "The draft preview loads without showing 'Something went wrong!' error",
+        "The actual error cause is identified and logged to console",
+        "Products display correctly in the preview when no filters are applied",
+        "Error handling provides specific information about what failed"
       ]
     },
     {
-      "id": "REQ-4",
-      "text": "Create advanced filtering system allowing users to filter by: price range (₹), rating threshold (< 4 stars), review count (< 200), BSR range, monthly revenue range, product weight (with lightweight preference), non-branded/private label friendly flag, low FBA seller count, high review growth in last 30 days, and high margin threshold (>30%)",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Price range (₹), Rating < 4 stars, Reviews < 200, BSR range, Monthly revenue range, Weight (lightweight preferred), Non-branded / private label friendly, Low FBA seller count, High review growth last 30 days, High margin (>30%)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All specified filters are functional and combinable",
-        "Filters update product results in real-time",
-        "Filter state persists during user session"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Build keyword research module displaying: search volume estimate, keyword difficulty score, CPC (cost-per-click) estimate, 12-month trend graph, long-tail keyword suggestions, and auto-suggest functionality derived from Amazon search patterns",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Show search volume estimate, Keyword difficulty, CPC estimate, Trend graph (last 12 months), Long-tail keyword suggestions, Auto-suggest scraping from Amazon search bar"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Keyword tool shows all specified metrics",
-        "Trend graph displays 12 months of data",
-        "Auto-suggest provides relevant long-tail keyword variations"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Implement trend detection system that identifies: products with sudden review growth spikes, price increase trends, seasonal demand patterns, and automatically assigns 'Rising Star' badge to qualifying products",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Detect products with sudden review growth, Detect price increase trend, Identify seasonal spikes, Show 'Rising Star' badge"
-        ]
-      },
-      "acceptanceCriteria": [
-        "System detects review velocity changes",
-        "Price trend analysis identifies upward movements",
-        "Rising Star badge appears on qualifying products",
-        "Seasonal patterns are tracked and displayed"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Create India-specific profit calculator that computes: Amazon referral fees, FBA fees, GST consideration, shipping cost, packaging cost, and ads budget; outputs net profit per unit, ROI percentage, and break-even ACOS (Advertising Cost of Sale)",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Include: Amazon referral fees, FBA fees, GST consideration, Shipping cost, Packaging cost, Ads budget",
-          "Output: Net profit per unit, ROI %, Break-even ACOS"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Calculator includes all India-specific cost factors",
-        "Outputs display net profit, ROI percentage, and break-even ACOS",
-        "GST calculations are accurate for Indian tax structure"
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Build competitor analysis page that displays top 10 sellers for a selected product showing: average price, average rating, average reviews, listing quality score, and weakness detection (poor images, bad keywords, low review count, high price)",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Show: Top 10 sellers, Avg price, Avg rating, Avg reviews, Listing quality score",
-          "Weakness detection: Poor images? Bad keywords? Low review count? High price?"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking a product opens competitor analysis view",
-        "Top 10 sellers are ranked and displayed with all metrics",
-        "Weakness detection identifies specific competitive gaps"
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Design modern dashboard UI with dark mode support featuring: category heatmap visualization, opportunity leaderboard, sortable product lists (by highest score, highest revenue, lowest competition, highest growth), and interactive charts including revenue bar charts, BSR trend lines, review growth graphs, and margin breakdown visualizations",
+      "id": "REQ-33",
+      "text": "Add fallback error recovery in the ProductGrid component in frontend/src/components/ProductGrid.tsx to handle cases where the searchProducts query fails, displaying a user-friendly error message with actionable troubleshooting steps instead of the generic 'Something went wrong!' message",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Modern dashboard: Dark mode, Category heatmap, Opportunity leaderboard, Sort by: Highest score, Highest revenue, Lowest competition, Highest growth",
-          "Use charts: Revenue bar charts, BSR trends, Review growth graph, Margin breakdown"
+          "msg-user-final"
         ]
       },
       "acceptanceCriteria": [
-        "Dark mode toggle is functional throughout the application",
-        "Category heatmap visualizes opportunity distribution",
-        "All specified chart types render with accurate data",
-        "Users can sort by all specified criteria"
+        "Error message clearly indicates what went wrong (network issue, backend error, data parsing error, etc.)",
+        "User is provided with actionable steps to resolve the issue",
+        "A retry button is available for transient failures",
+        "Error state does not prevent the rest of the UI from functioning"
       ]
     },
     {
-      "id": "REQ-10",
-      "text": "Implement seller alerts notification system that triggers alerts for: new high-opportunity products discovered, sudden drops in competition levels, trending keyword emergence, and seasonal demand spikes",
-      "target": "both",
+      "id": "REQ-34",
+      "text": "Verify that the backend searchProducts method in backend/main.mo returns a valid response structure even when no filters are applied, ensuring the default case returns all products without errors",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "New high-opportunity product alert, Sudden drop in competition, Trending keyword alert, Seasonal spike alert"
+          "msg-user-final"
         ]
       },
       "acceptanceCriteria": [
-        "Alert system monitors all four trigger conditions",
-        "Notifications are displayed in the UI",
-        "Users can view alert history"
+        "Calling searchProducts with null/empty filters returns all products successfully",
+        "Response structure matches the expected frontend data type",
+        "No runtime errors occur in the backend when processing the query",
+        "Backend logs indicate successful query execution"
       ]
     },
     {
-      "id": "REQ-11",
-      "text": "Create monetization tier system with Free plan (limited searches per day), Pro plan, and Premium plan; include features for data export to CSV, saved product lists, and email alert delivery for paid tiers",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Free plan (limited searches/day), Pro plan, Premium plan, Data export (CSV), Saved product list, Email alerts"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Three distinct plan tiers are implemented",
-        "Free tier enforces daily search limits",
-        "CSV export is available for paid users",
-        "Users can save and manage product lists"
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "text": "Add bonus advanced features including: AI-generated suggestion explaining why each product is a good opportunity, private label suitability score, brand domination detection, market saturation warnings, estimated capital required calculation, and India sourcing suggestions with local manufacturer hints",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "AI suggestion: 'Why this product is good opportunity', Private label suitability score, Brand domination detection, Saturation warning, Capital required estimation, India sourcing suggestion (local manufacturer hint)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Each product displays AI-generated opportunity explanation",
-        "Private label score indicates manufacturing feasibility",
-        "Brand domination and saturation warnings appear when relevant",
-        "Capital requirements are estimated and displayed"
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "text": "Design product display card format showing: Product Name, Category, Price, Estimated Sales, Revenue, Competition Level, Opportunity Score (1-100), Net Margin, Trend Status, and Recommendation indicator (YES/AVOID/MODERATE)",
+      "id": "REQ-35",
+      "text": "Add initialization error detection in the useActor hook in frontend/src/hooks/useActor.ts to catch and report cases where the backend actor fails to initialize or becomes unavailable, which could cause the 'Something went wrong!' error",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Display: Product Name, Category, Price, Estimated Sales, Revenue, Competition Level, Opportunity Score, Net Margin, Trend Status, Recommendation: YES / AVOID / MODERATE"
+          "msg-user-final"
         ]
       },
       "acceptanceCriteria": [
-        "Product cards display all specified information fields",
-        "Recommendation indicator uses clear visual distinction",
-        "Cards are scannable and organized in a grid or list layout"
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "text": "Optimize application for Indian seller needs by handling GST pricing structure, considering Indian buying behavior patterns in algorithms, ensuring scalability for millions of product records, and maintaining search response time under 3 seconds",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Tool must be optimized for Indian sellers. Must handle GST pricing. Must consider Indian buying behaviour. Must be scalable for millions of products. Must be fast (<3 sec search response)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "GST calculations are integrated throughout pricing logic",
-        "Search and filter operations complete in under 3 seconds",
-        "Backend architecture supports millions of product records",
-        "Algorithms account for India-specific market patterns"
+        "Actor initialization failures are caught and logged with specific error details",
+        "User is notified if the backend connection cannot be established",
+        "Queries are prevented from executing when actor is unavailable",
+        "Recovery mechanism attempts to reinitialize the actor on authentication state changes"
       ]
     }
   ],
   "constraints": [
-    "Must use React with TypeScript for frontend",
-    "Must use Motoko for backend (no Node.js or Python)",
-    "Must use single-actor architecture for Motoko backend",
-    "Must optimize for performance with <3 second search response time",
-    "Must handle millions of product records efficiently",
-    "Cannot integrate external databases (PostgreSQL, MongoDB, Redis)",
-    "Cannot use Next.js (React only)",
-    "Cannot implement real-time features like WebSockets",
-    "Cannot integrate external APIs directly (Amazon API, scraping services)",
-    "Cannot send email alerts via external services (SendGrid, Mailgun)"
+    "Do not modify the Internet Identity authentication flow in frontend/src/hooks/useInternetIdentity.ts",
+    "Do not change the backend main actor architecture defined in backend/main.mo beyond fixing the searchProducts method",
+    "Preserve existing debug logging statements added in previous versions",
+    "Maintain compatibility with existing filter state management in useProductFilters.ts"
   ],
   "nonGoals": [
-    "Integration with actual Amazon.in API or web scraping",
-    "Real-time data fetching from Amazon servers",
-    "External authentication beyond Internet Identity",
-    "SMS or push notification delivery",
-    "Integration with external payment processors for monetization",
-    "Mobile app development (React Native, Flutter)",
-    "Backend services in Rust, Python, or Node.js",
-    "External database connections",
-    "Email delivery infrastructure",
-    "Automated captcha handling or proxy rotation",
-    "Real-time WebSocket connections for live data updates"
+    "Redesigning the error UI layout",
+    "Adding new filter capabilities",
+    "Modifying the authentication system",
+    "Changing the product card display format"
   ],
   "imageRequirements": {
-    "required": [
-      "Modern dashboard hero background with data analytics theme in warm earth tones (hero-dashboard.dim_1920x1080.png)",
-      "Category heatmap placeholder visualization showing product opportunity distribution (category-heatmap.dim_800x600.png)",
-      "Opportunity score meter icon in green-to-red gradient (opportunity-meter.dim_256x256.png)",
-      "India map outline icon for seller localization features (india-map-icon.dim_128x128.png)",
-      "Rising star badge icon in gold with sparkle effect (rising-star-badge.dim_128x128.png)",
-      "Profit calculator icon with rupee symbol and calculator imagery (profit-calc-icon.dim_128x128.png)",
-      "Competitor analysis icon showing multiple seller profiles (competitor-icon.dim_128x128.png)",
-      "Alert bell icon with notification dot (alert-bell.dim_96x96.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }

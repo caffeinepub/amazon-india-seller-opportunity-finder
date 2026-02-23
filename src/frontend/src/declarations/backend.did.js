@@ -85,6 +85,10 @@ export const OpportunityScore = IDL.Record({
   'demandScore' : IDL.Float64,
   'marginScore' : IDL.Float64,
 });
+export const OpportunityScoreFilters = IDL.Record({
+  'minScore' : IDL.Float64,
+  'category' : IDL.Opt(IDL.Text),
+});
 export const KeywordResearchRequest = IDL.Record({
   'searchVolumeEstimate' : IDL.Opt(IDL.Nat),
   'keywordDifficultyScore' : IDL.Opt(IDL.Float64),
@@ -104,8 +108,9 @@ export const SellerAnalysisRequest = IDL.Record({
   'weaknessDetection' : IDL.Opt(IDL.Vec(IDL.Text)),
   'listingQualityScore' : IDL.Opt(IDL.Float64),
 });
-export const AdvancedFilters = IDL.Record({
+export const ProductSearchFilters = IDL.Record({
   'lowFBACount' : IDL.Bool,
+  'subcategory' : IDL.Opt(IDL.Text),
   'nonBrandedFriendly' : IDL.Bool,
   'ratingThreshold' : IDL.Opt(IDL.Float64),
   'priceRange' : IDL.Opt(IDL.Tuple(IDL.Float64, IDL.Float64)),
@@ -113,8 +118,13 @@ export const AdvancedFilters = IDL.Record({
   'highMarginThreshold' : IDL.Bool,
   'bsrRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
   'lightweightPreference' : IDL.Bool,
+  'category' : IDL.Opt(IDL.Text),
   'reviewCountMax' : IDL.Opt(IDL.Nat),
   'highReviewGrowth' : IDL.Bool,
+});
+export const ProductSearchResult = IDL.Variant({
+  'error' : IDL.Text,
+  'success' : IDL.Vec(Product),
 });
 
 export const idlService = IDL.Service({
@@ -148,11 +158,15 @@ export const idlService = IDL.Service({
   'addProduct' : IDL.Func([ProductAddRequest], [ProductId], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'forceProductUpdate' : IDL.Func([], [], []),
-  'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], []),
+  'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getOpportunities' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
-  'getOpportunityScore' : IDL.Func([IDL.Text], [OpportunityScore], []),
+  'getOpportunityScore' : IDL.Func([IDL.Text], [OpportunityScore], ['query']),
+  'getOpportunityScoreFiltered' : IDL.Func(
+      [OpportunityScoreFilters],
+      [IDL.Vec(Product)],
+      ['query'],
+    ),
   'getProduct' : IDL.Func([ProductId], [Product], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
@@ -164,11 +178,10 @@ export const idlService = IDL.Service({
   'saveKeywordResearch' : IDL.Func([KeywordResearchRequest], [], []),
   'saveProductTrends' : IDL.Func([IDL.Text, ProductTrend], [], []),
   'saveSellerAnalysis' : IDL.Func([SellerAnalysisRequest], [], []),
-  'searchProductsByCategory' : IDL.Func([IDL.Text], [IDL.Vec(Product)], []),
-  'searchProductsByFilters' : IDL.Func(
-      [AdvancedFilters],
-      [IDL.Vec(Product)],
-      [],
+  'searchProducts' : IDL.Func(
+      [ProductSearchFilters],
+      [ProductSearchResult],
+      ['query'],
     ),
 });
 
@@ -252,6 +265,10 @@ export const idlFactory = ({ IDL }) => {
     'demandScore' : IDL.Float64,
     'marginScore' : IDL.Float64,
   });
+  const OpportunityScoreFilters = IDL.Record({
+    'minScore' : IDL.Float64,
+    'category' : IDL.Opt(IDL.Text),
+  });
   const KeywordResearchRequest = IDL.Record({
     'searchVolumeEstimate' : IDL.Opt(IDL.Nat),
     'keywordDifficultyScore' : IDL.Opt(IDL.Float64),
@@ -271,8 +288,9 @@ export const idlFactory = ({ IDL }) => {
     'weaknessDetection' : IDL.Opt(IDL.Vec(IDL.Text)),
     'listingQualityScore' : IDL.Opt(IDL.Float64),
   });
-  const AdvancedFilters = IDL.Record({
+  const ProductSearchFilters = IDL.Record({
     'lowFBACount' : IDL.Bool,
+    'subcategory' : IDL.Opt(IDL.Text),
     'nonBrandedFriendly' : IDL.Bool,
     'ratingThreshold' : IDL.Opt(IDL.Float64),
     'priceRange' : IDL.Opt(IDL.Tuple(IDL.Float64, IDL.Float64)),
@@ -280,8 +298,13 @@ export const idlFactory = ({ IDL }) => {
     'highMarginThreshold' : IDL.Bool,
     'bsrRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
     'lightweightPreference' : IDL.Bool,
+    'category' : IDL.Opt(IDL.Text),
     'reviewCountMax' : IDL.Opt(IDL.Nat),
     'highReviewGrowth' : IDL.Bool,
+  });
+  const ProductSearchResult = IDL.Variant({
+    'error' : IDL.Text,
+    'success' : IDL.Vec(Product),
   });
   
   return IDL.Service({
@@ -315,11 +338,15 @@ export const idlFactory = ({ IDL }) => {
     'addProduct' : IDL.Func([ProductAddRequest], [ProductId], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'forceProductUpdate' : IDL.Func([], [], []),
-    'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], []),
+    'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getOpportunities' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
-    'getOpportunityScore' : IDL.Func([IDL.Text], [OpportunityScore], []),
+    'getOpportunityScore' : IDL.Func([IDL.Text], [OpportunityScore], ['query']),
+    'getOpportunityScoreFiltered' : IDL.Func(
+        [OpportunityScoreFilters],
+        [IDL.Vec(Product)],
+        ['query'],
+      ),
     'getProduct' : IDL.Func([ProductId], [Product], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
@@ -331,11 +358,10 @@ export const idlFactory = ({ IDL }) => {
     'saveKeywordResearch' : IDL.Func([KeywordResearchRequest], [], []),
     'saveProductTrends' : IDL.Func([IDL.Text, ProductTrend], [], []),
     'saveSellerAnalysis' : IDL.Func([SellerAnalysisRequest], [], []),
-    'searchProductsByCategory' : IDL.Func([IDL.Text], [IDL.Vec(Product)], []),
-    'searchProductsByFilters' : IDL.Func(
-        [AdvancedFilters],
-        [IDL.Vec(Product)],
-        [],
+    'searchProducts' : IDL.Func(
+        [ProductSearchFilters],
+        [ProductSearchResult],
+        ['query'],
       ),
   });
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -9,7 +9,8 @@ import OpportunityLeaderboard from '../components/OpportunityLeaderboard';
 import CategoryHeatmap from '../components/CategoryHeatmap';
 import KeywordResearch from '../components/KeywordResearch';
 import ProfitCalculator from '../components/ProfitCalculator';
-import { useGetAllProducts } from '../hooks/useQueries';
+import { useGetAllProducts, useSearchProducts } from '../hooks/useQueries';
+import { useProductFilters } from '../hooks/useProductFilters';
 import { Search, Filter, TrendingUp } from 'lucide-react';
 import LoadingStates from '../components/LoadingStates';
 
@@ -17,7 +18,68 @@ export default function Dashboard() {
   const { identity } = useInternetIdentity();
   const isAuthenticated = !!identity;
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const { data: products, isLoading } = useGetAllProducts();
+  const { filters, hasActiveFilters } = useProductFilters();
+  
+  // Merge category selection with filters
+  const searchFilters = {
+    ...filters,
+    category: selectedCategory || filters.category,
+  };
+
+  // Use search when filters are active, otherwise get all products
+  const { 
+    data: allProducts, 
+    isLoading: isLoadingAll, 
+    error: errorAll,
+    refetch: refetchAll 
+  } = useGetAllProducts();
+  
+  const { 
+    data: filteredProducts, 
+    isLoading: isLoadingFiltered, 
+    error: errorFiltered,
+    refetch: refetchFiltered 
+  } = useSearchProducts(searchFilters);
+
+  // Determine which data to use
+  const shouldUseFiltered = hasActiveFilters || selectedCategory;
+  const products = shouldUseFiltered ? filteredProducts : allProducts;
+  const isLoading = shouldUseFiltered ? isLoadingFiltered : isLoadingAll;
+  const error = shouldUseFiltered ? errorFiltered : errorAll;
+  const refetch = shouldUseFiltered ? refetchFiltered : refetchAll;
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.log('📊 Dashboard state update:', {
+        hasActiveFilters,
+        selectedCategory,
+        shouldUseFiltered,
+        searchFilters: {
+          category: searchFilters.category,
+          subcategory: searchFilters.subcategory,
+          priceRange: searchFilters.priceRange,
+          ratingThreshold: searchFilters.ratingThreshold,
+          reviewCountMax: searchFilters.reviewCountMax?.toString(),
+          bsrRange: searchFilters.bsrRange ? [searchFilters.bsrRange[0].toString(), searchFilters.bsrRange[1].toString()] : undefined,
+          monthlyRevenueRange: searchFilters.monthlyRevenueRange,
+          booleanFilters: {
+            lightweightPreference: searchFilters.lightweightPreference,
+            nonBrandedFriendly: searchFilters.nonBrandedFriendly,
+            lowFBACount: searchFilters.lowFBACount,
+            highReviewGrowth: searchFilters.highReviewGrowth,
+            highMarginThreshold: searchFilters.highMarginThreshold,
+          },
+        },
+        productsCount: products?.length || 0,
+        isLoading,
+        hasError: !!error,
+        errorMessage: error?.message,
+        allProductsCount: allProducts?.length || 0,
+        filteredProductsCount: filteredProducts?.length || 0,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }, [hasActiveFilters, selectedCategory, shouldUseFiltered, products, isLoading, error, allProducts, filteredProducts, searchFilters]);
 
   if (!isAuthenticated) {
     return (
@@ -99,7 +161,12 @@ export default function Dashboard() {
               {isLoading ? (
                 <LoadingStates />
               ) : (
-                <ProductGrid products={products || []} selectedCategory={selectedCategory} />
+                <ProductGrid 
+                  products={products || []} 
+                  isLoading={isLoading}
+                  error={error || null}
+                  onRetry={() => refetch()}
+                />
               )}
             </div>
           </div>
@@ -116,7 +183,7 @@ export default function Dashboard() {
         <TabsContent value="insights" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <CategoryHeatmap />
-            <OpportunityLeaderboard products={products || []} />
+            <OpportunityLeaderboard products={allProducts || []} />
           </div>
         </TabsContent>
       </Tabs>

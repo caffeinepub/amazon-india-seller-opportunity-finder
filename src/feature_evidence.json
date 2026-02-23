@@ -2,188 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-support-all-amazon-in-product-categories-including-electronics-home-kitchen-beauty-grocery-fashion-automotive-industrial-toys-baby-health-books-pet-supplies-office-sports-handmade-luxury-and-emerging-categories-with-category-filter-and-subcategory-drill-down-navigation",
-      "featureTitle": "Support all Amazon.in product categories including: Electronics, Home & Kitchen, Beauty, Grocery, Fashion, Automotive, Industrial, Toys, Baby, Health, Books, Pet Supplies, Office, Sports, Handmade, Luxury, and emerging categories with category filter and subcategory drill-down navigation",
+      "featureId": "feature-investigate-and-resolve-the-something-went-wrong-error-appearing-in-the-draft-preview-by-examining-the-productgrid-component-s-error-handling-logic-the-searchproducts-query-response-handling-in-usequeries-ts-and-the-backend-searchproducts-method-to-identify-the-root-cause-of-the-failure",
+      "featureTitle": "Investigate and resolve the 'Something went wrong!' error appearing in the draft preview by examining the ProductGrid component's error handling logic, the searchProducts query response handling in useQueries.ts, and the backend searchProducts method to identify the root cause of the failure",
       "files": [
-        "frontend/src/components/CategoryFilter.tsx",
-        "frontend/src/types/categories.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-advanced-filtering-system-allowing-users-to-filter-by-price-range-rating-threshold-4-stars-review-count-200-bsr-range-monthly-revenue-range-product-weight-with-lightweight-preference-non-branded-private-label-friendly-flag-low-fba-seller-count-high-review-growth-in-last-30-days-and-high-margin-threshold-30",
-      "featureTitle": "Create advanced filtering system allowing users to filter by: price range (₹), rating threshold (< 4 stars), review count (< 200), BSR range, monthly revenue range, product weight (with lightweight preference), non-branded/private label friendly flag, low FBA seller count, high review growth in last 30 days, and high margin threshold (>30%)",
-      "files": [
-        "frontend/src/components/AdvancedFilters.tsx",
-        "frontend/src/hooks/useProductFilters.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-build-keyword-research-module-displaying-search-volume-estimate-keyword-difficulty-score-cpc-cost-per-click-estimate-12-month-trend-graph-long-tail-keyword-suggestions-and-auto-suggest-functionality-derived-from-amazon-search-patterns",
-      "featureTitle": "Build keyword research module displaying: search volume estimate, keyword difficulty score, CPC (cost-per-click) estimate, 12-month trend graph, long-tail keyword suggestions, and auto-suggest functionality derived from Amazon search patterns",
-      "files": [
-        "frontend/src/components/KeywordResearch.tsx",
-        "frontend/src/components/KeywordTrendChart.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-india-specific-profit-calculator-that-computes-amazon-referral-fees-fba-fees-gst-consideration-shipping-cost-packaging-cost-and-ads-budget-outputs-net-profit-per-unit-roi-percentage-and-break-even-acos-advertising-cost-of-sale",
-      "featureTitle": "Create India-specific profit calculator that computes: Amazon referral fees, FBA fees, GST consideration, shipping cost, packaging cost, and ads budget; outputs net profit per unit, ROI percentage, and break-even ACOS (Advertising Cost of Sale)",
-      "files": [
-        "frontend/src/components/ProfitCalculator.tsx",
-        "frontend/src/utils/profitCalculations.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-build-competitor-analysis-page-that-displays-top-10-sellers-for-a-selected-product-showing-average-price-average-rating-average-reviews-listing-quality-score-and-weakness-detection-poor-images-bad-keywords-low-review-count-high-price",
-      "featureTitle": "Build competitor analysis page that displays top 10 sellers for a selected product showing: average price, average rating, average reviews, listing quality score, and weakness detection (poor images, bad keywords, low review count, high price)",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/CompetitorCard.tsx",
-        "frontend/src/pages/CompetitorAnalysis.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-design-modern-dashboard-ui-with-dark-mode-support-featuring-category-heatmap-visualization-opportunity-leaderboard-sortable-product-lists-by-highest-score-highest-revenue-lowest-competition-highest-growth-and-interactive-charts-including-revenue-bar-charts-bsr-trend-lines-review-growth-graphs-and-margin-breakdown-visualizations",
-      "featureTitle": "Design modern dashboard UI with dark mode support featuring: category heatmap visualization, opportunity leaderboard, sortable product lists (by highest score, highest revenue, lowest competition, highest growth), and interactive charts including revenue bar charts, BSR trend lines, review growth graphs, and margin breakdown visualizations",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/CategoryHeatmap.tsx",
-        "frontend/src/components/OpportunityLeaderboard.tsx",
-        "frontend/src/components/ProductSortControls.tsx",
-        "frontend/src/components/ThemeToggle.tsx",
-        "frontend/src/index.css",
-        "frontend/src/pages/Dashboard.tsx",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-seller-alerts-notification-system-that-triggers-alerts-for-new-high-opportunity-products-discovered-sudden-drops-in-competition-levels-trending-keyword-emergence-and-seasonal-demand-spikes",
-      "featureTitle": "Implement seller alerts notification system that triggers alerts for: new high-opportunity products discovered, sudden drops in competition levels, trending keyword emergence, and seasonal demand spikes",
-      "files": [
-        "frontend/src/components/AlertHistory.tsx",
-        "frontend/src/components/AlertNotifications.tsx",
-        "frontend/src/components/Layout.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-10"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-monetization-tier-system-with-free-plan-limited-searches-per-day-pro-plan-and-premium-plan-include-features-for-data-export-to-csv-saved-product-lists-and-email-alert-delivery-for-paid-tiers",
-      "featureTitle": "Create monetization tier system with Free plan (limited searches per day), Pro plan, and Premium plan; include features for data export to CSV, saved product lists, and email alert delivery for paid tiers",
-      "files": [
-        "frontend/src/components/SubscriptionTierBadge.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-11"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-design-product-display-card-format-showing-product-name-category-price-estimated-sales-revenue-competition-level-opportunity-score-1-100-net-margin-trend-status-and-recommendation-indicator-yes-avoid-moderate",
-      "featureTitle": "Design product display card format showing: Product Name, Category, Price, Estimated Sales, Revenue, Competition Level, Opportunity Score (1-100), Net Margin, Trend Status, and Recommendation indicator (YES/AVOID/MODERATE)",
-      "files": [
-        "frontend/src/components/OpportunityScoreMeter.tsx",
-        "frontend/src/components/ProductCard.tsx",
         "frontend/src/components/ProductGrid.tsx",
-        "frontend/src/components/RecommendationBadge.tsx"
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -195,16 +18,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-13"
+        "REQ-32"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-optimize-application-for-indian-seller-needs-by-handling-gst-pricing-structure-considering-indian-buying-behavior-patterns-in-algorithms-ensuring-scalability-for-millions-of-product-records-and-maintaining-search-response-time-under-3-seconds",
-      "featureTitle": "Optimize application for Indian seller needs by handling GST pricing structure, considering Indian buying behavior patterns in algorithms, ensuring scalability for millions of product records, and maintaining search response time under 3 seconds",
+      "featureId": "feature-add-fallback-error-recovery-in-the-productgrid-component-in-frontend-src-components-productgrid-tsx-to-handle-cases-where-the-searchproducts-query-fails-displaying-a-user-friendly-error-message-with-actionable-troubleshooting-steps-instead-of-the-generic-something-went-wrong-message",
+      "featureTitle": "Add fallback error recovery in the ProductGrid component in frontend/src/components/ProductGrid.tsx to handle cases where the searchProducts query fails, displaying a user-friendly error message with actionable troubleshooting steps instead of the generic 'Something went wrong!' message",
       "files": [
-        "frontend/src/components/LoadingStates.tsx",
-        "frontend/src/utils/formatters.ts"
+        "frontend/src/components/ProductGrid.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -216,7 +38,28 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-14"
+        "REQ-33"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-initialization-error-detection-in-the-useactor-hook-in-frontend-src-hooks-useactor-ts-to-catch-and-report-cases-where-the-backend-actor-fails-to-initialize-or-becomes-unavailable-which-could-cause-the-something-went-wrong-error",
+      "featureTitle": "Add initialization error detection in the useActor hook in frontend/src/hooks/useActor.ts to catch and report cases where the backend actor fails to initialize or becomes unavailable, which could cause the 'Something went wrong!' error",
+      "files": [
+        "frontend/src/components/ProductGrid.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-35"
       ],
       "confidence": "high"
     }

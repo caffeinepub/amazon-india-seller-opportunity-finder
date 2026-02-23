@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 29,
+  "projectStateVersion": 31,
   "summary": "Amazon India Seller Opportunity Finder - a full-stack web application for identifying high-demand, low-competition, high-margin products on Amazon.in with real-time data analysis, opportunity scoring, profit calculations, and trend detection across all Amazon India categories",
   "architectural_notes": [
     "React/Next.js frontend with Tailwind CSS and Chart.js for visualization",
@@ -12,8 +12,9 @@
     "India-specific business logic for GST, fees, and buying behavior"
   ],
   "known_issues": [
-    "Version 12: Products display without filters but filter functionality is not working - filters are not being applied",
-    "Version 12: Product data appears to be incorrect or inaccurate"
+    "Version 14: ASIN values are incorrect or inaccurate",
+    "Version 14: Product prices are incorrect or inaccurate",
+    "Version 14: Actual product names are not being displayed"
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -528,6 +529,14 @@
         "REQ-83"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-productcard-component-in-frontend-src-components-productcard-tsx-is-correctly-reading-and-displaying-the-productname-field-from-the-product-data-structure-ensuring-the-actual-product-name-appears-as-the-primary-heading-instead-of-placeholder-or-missing-text",
+      "title": "Verify that the ProductCard component in frontend/src/components/ProductCard.tsx is correctly reading and displaying the productName field from the Product data structure, ensuring the actual product name appears as the primary heading instead of placeholder or missing text",
+      "reqIds": [
+        "REQ-86"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -758,6 +767,38 @@
       "summary": "Add productName field to the Product type in backend/main.mo if not already present, ensuring it stores the full product title",
       "reqIds": [
         "REQ-80"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-63",
+      "summary": "Audit and fix the ASIN field values in the mock product data returned by backend/main.mo searchProducts method to ensure all ASINs are valid 10-character alphanumeric Amazon identifiers (e.g., B08N5WRWNW, B09G9FPHY6) instead of placeholder or incorrect values",
+      "reqIds": [
+        "REQ-84"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-64",
+      "summary": "Audit and fix the price field values in the mock product data in backend/main.mo to ensure prices are accurate, realistic, and consistent with the product category and type, using actual Amazon.in marketplace pricing patterns (e.g., ₹299 for kitchen containers, ₹1499 for electronics, ₹499 for fashion items)",
+      "reqIds": [
+        "REQ-85"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-66",
+      "summary": "Update the mock product data in backend/main.mo to include realistic, detailed product names for each item that match their category and specifications (e.g., 'Borosil Glass Food Storage Container Set 500ml - Pack of 4', 'boAt Airdopes 141 Bluetooth Truly Wireless in Ear Earbuds', 'Safari Thorium 55 Cms Hardsided Check-in Luggage')",
+      "reqIds": [
+        "REQ-87"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-67",
+      "summary": "Add data validation logging in backend/main.mo searchProducts method that verifies each product object contains valid non-empty values for productName, asin, and price fields before returning the results, logging any products with missing or invalid data",
+      "reqIds": [
+        "REQ-88"
       ],
       "status": "pending"
     }

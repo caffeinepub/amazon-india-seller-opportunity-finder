@@ -1,53 +1,21 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add ASIN and Product Name fields to product data",
+  "title": "Fix incorrect ASIN, price, and product name display",
   "requirements": [
     {
-      "id": "REQ-81",
-      "summary": "Display ASIN field prominently in ProductCard component with clear labeling and monospace styling",
+      "id": "REQ-86",
+      "summary": "Verify ProductCard component correctly displays productName field from Product data structure",
       "acceptanceCriteria": [
-        "ASIN is displayed on each product card",
-        "ASIN is labeled clearly (e.g., 'ASIN: B08XYZABC1')",
-        "ASIN uses monospace or distinctive styling for readability"
+        "ProductCard displays the productName field as the primary heading",
+        "Product names are visible and properly formatted on all product cards",
+        "No empty, null, or placeholder values appear in the product name position"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/ProductCard.tsx",
           "operation": "modify",
-          "description": "Add ASIN display near the product title or category information. Use monospace font styling for the 10-character alphanumeric identifier. Include a clear label such as 'ASIN:' and ensure the styling is distinctive and readable in both light and dark modes. Position the ASIN field in a prominent location within the card layout, potentially near the top alongside category information."
-        }
-      ]
-    },
-    {
-      "id": "REQ-82",
-      "summary": "Ensure product name is displayed as the primary heading in ProductCard with proper text handling",
-      "acceptanceCriteria": [
-        "Product name is the most prominent text element on the card",
-        "Product name supports text truncation or wrapping for long titles",
-        "Product name is clearly visible in both light and dark modes"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/ProductCard.tsx",
-          "operation": "modify",
-          "description": "Verify that the product name (productName field from Product type) is displayed as the primary heading element with appropriate text sizing and weight. Implement text truncation or wrapping to handle long Amazon product titles gracefully. Ensure the heading uses appropriate Tailwind classes for visibility in both theme modes. If the current implementation uses a different field name for the product title, update it to use the productName field from the backend Product type."
-        }
-      ]
-    },
-    {
-      "id": "REQ-83",
-      "summary": "Update frontend Product type definition to include asin and productName fields for type safety",
-      "acceptanceCriteria": [
-        "TypeScript Product interface includes asin: string field",
-        "TypeScript Product interface includes productName or title: string field",
-        "No type errors in components using Product type"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/backend.d.ts",
-          "operation": "modify",
-          "description": "Verify that the Product interface includes both asin: string and productName: string fields. The backend interface shows these fields are already present in the Product type. Ensure no additional modifications are needed and that the type definition matches the backend Product type exactly. If any discrepancies exist between the frontend type and backend type, align them to ensure type safety across all frontend components using the Product type."
+          "description": "Verify that the component correctly reads and displays product.productName as the primary heading. Ensure the productName field is rendered with proper null/undefined checks and fallback handling. Add console logging during development to verify productName values are being received from the backend. Ensure the text is visible, properly truncated if needed, and styled consistently with the card design."
         }
       ]
     }

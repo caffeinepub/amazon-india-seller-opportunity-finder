@@ -6,13 +6,13 @@ import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
-import MixinStorage "blob-storage/Mixin";
-import Storage "blob-storage/Storage";
 import Iter "mo:core/Iter";
 import Float "mo:core/Float";
 import Nat "mo:core/Nat";
 import List "mo:core/List";
 import Migration "migration";
+import Storage "blob-storage/Storage";
+import MixinStorage "blob-storage/Mixin";
 
 (with migration = Migration.run)
 actor {
@@ -26,7 +26,7 @@ actor {
   public type Product = {
     id : ProductId;
     productName : Text;
-    asin : Text; // ASIN field (10-character alphanumeric Amazon identifier)
+    asin : Text;
     category : Text;
     subcategory : Text;
     price : Float;
@@ -58,8 +58,8 @@ actor {
   };
 
   public type ProductAddRequest = {
-    productName : Text; // Updated to productName
-    asin : Text; // ASIN field
+    productName : Text;
+    asin : Text;
     category : Text;
     subcategory : Text;
     price : Float;
@@ -229,192 +229,154 @@ actor {
   func getElectronicsProducts() : [Product] {
     [
       {
-        id = "1";
-        productName = "USB-C Fast Charger";
-        asin = "B012345678";
+        id = "E001";
+        productName = "boAt Airdopes 141 Bluetooth Truly Wireless in Ear Earbuds";
+        asin = "B09B8MPT6T";
         category = "Electronics";
-        subcategory = "Mobile Accessories";
-        price = 49.99;
-        mrp = 69.99;
+        subcategory = "Audio";
+        price = 1499.0;
+        mrp = 2999.0;
+        rating = 4.2;
+        reviewCount = 85000;
+        bsr = 1;
+        estimatedMonthlySales = 5000;
+        brand = "boAt";
+        sellerType = #fba;
+        availableStock = 10000;
+        margin = calculateMargin(700.0, 1499.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "E002";
+        productName = "Safari Thorium 55 Cms Hardsided Check-in Luggage";
+        asin = "B07N9R8HRL";
+        category = "Home & Kitchen";
+        subcategory = "Luggage";
+        price = 2199.0;
+        mrp = 3499.0;
         rating = 4.4;
-        reviewCount = 350;
-        bsr = 1200;
-        estimatedMonthlySales = 500;
-        brand = "TechConnect";
-        sellerType = #fba;
-        availableStock = 300;
-        margin = calculateMargin(25.0, 49.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "2";
-        productName = "Wireless Bluetooth Headphones";
-        asin = "B076854654";
-        category = "Electronics";
-        subcategory = "Audio";
-        price = 149.99;
-        mrp = 199.99;
-        rating = 4.6;
-        reviewCount = 850;
-        bsr = 900;
-        estimatedMonthlySales = 700;
-        brand = "SoundMax";
-        sellerType = #fba;
-        availableStock = 400;
-        margin = calculateMargin(60.0, 149.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "3";
-        productName = "Smart LED Bulb (Pack of 2)";
-        asin = "B079178468";
-        category = "Electronics";
-        subcategory = "Lighting";
-        price = 29.99;
-        mrp = 39.99;
-        rating = 4.3;
-        reviewCount = 150;
-        bsr = 1800;
-        estimatedMonthlySales = 450;
-        brand = "BrightLife";
-        sellerType = #easyShip;
-        availableStock = 200;
-        margin = calculateMargin(10.0, 29.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "4";
-        productName = "Bluetooth Speaker";
-        asin = "B797986468";
-        category = "Electronics";
-        subcategory = "Audio";
-        price = 99.99;
-        mrp = 129.99;
-        rating = 4.5;
-        reviewCount = 600;
-        bsr = 1000;
-        estimatedMonthlySales = 550;
-        brand = "SoundWave";
-        sellerType = #fba;
-        availableStock = 320;
-        margin = calculateMargin(39.99, 99.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "5";
-        productName = "Wireless Earbuds";
-        asin = "B079764638";
-        category = "Electronics";
-        subcategory = "Audio";
-        price = 179.99;
-        mrp = 249.99;
-        rating = 4.7;
-        reviewCount = 950;
-        bsr = 850;
+        reviewCount = 12000;
+        bsr = 3;
         estimatedMonthlySales = 800;
-        brand = "SoundCore";
-        sellerType = #fba;
-        availableStock = 400;
-        margin = calculateMargin(85.0, 179.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "6";
-        productName = "Car Phone Mount";
-        asin = "B013934678";
-        category = "Electronics";
-        subcategory = "Mobile Accessories";
-        price = 19.99;
-        mrp = 29.99;
-        rating = 4.1;
-        reviewCount = 120;
-        bsr = 2200;
-        estimatedMonthlySales = 300;
-        brand = "TechConnect";
-        sellerType = #sellerFulfilled;
-        availableStock = 150;
-        margin = calculateMargin(9.99, 19.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "7";
-        productName = "Solar Power Bank";
-        asin = "B079598568";
-        category = "Electronics";
-        subcategory = "Mobile Accessories";
-        price = 69.99;
-        mrp = 89.99;
-        rating = 4.3;
-        reviewCount = 200;
-        bsr = 1500;
-        estimatedMonthlySales = 400;
-        brand = "PowerPro";
-        sellerType = #fba;
-        availableStock = 200;
-        margin = calculateMargin(29.99, 69.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "8";
-        productName = "Laptop Stand";
-        asin = "B541324568";
-        category = "Electronics";
-        subcategory = "Computer Accessories";
-        price = 39.99;
-        mrp = 59.99;
-        rating = 4.4;
-        reviewCount = 250;
-        bsr = 1400;
-        estimatedMonthlySales = 350;
-        brand = "TechConnect";
+        brand = "Safari";
         sellerType = #easyShip;
-        availableStock = 180;
-        margin = calculateMargin(18.99, 39.99);
+        availableStock = 5000;
+        margin = calculateMargin(1000.0, 2199.0);
         lastModified = Time.now();
         images = [];
       },
       {
-        id = "9";
-        productName = "Wireless Mouse";
-        asin = "B075786482";
+        id = "E003";
+        productName = "Mi 10000mAH Li-Polymer Power Bank 3i with 18W Fast Charging";
+        asin = "B08JHQS98L";
         category = "Electronics";
-        subcategory = "Computer Accessories";
-        price = 24.99;
-        mrp = 34.99;
-        rating = 4.5;
-        reviewCount = 380;
-        bsr = 1100;
-        estimatedMonthlySales = 520;
-        brand = "TechConnect";
+        subcategory = "Mobile Accessories";
+        price = 999.0;
+        mrp = 1499.0;
+        rating = 4.3;
+        reviewCount = 120000;
+        bsr = 5;
+        estimatedMonthlySales = 15000;
+        brand = "Mi";
         sellerType = #fba;
-        availableStock = 280;
-        margin = calculateMargin(12.99, 24.99);
+        availableStock = 30000;
+        margin = calculateMargin(600.0, 999.0);
         lastModified = Time.now();
         images = [];
       },
       {
-        id = "10";
-        productName = "Noise Cancelling Headphones";
-        asin = "B059459462";
+        id = "E004";
+        productName = "Philips HD4928/01 2100-Watt Induction Cooktop";
+        asin = "B071XKTR3X";
+        category = "Home & Kitchen";
+        subcategory = "Appliances";
+        price = 2499.0;
+        mrp = 3995.0;
+        rating = 4.2;
+        reviewCount = 47000;
+        bsr = 7;
+        estimatedMonthlySales = 2000;
+        brand = "Philips";
+        sellerType = #fba;
+        availableStock = 6000;
+        margin = calculateMargin(1400.0, 2499.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "E005";
+        productName = "Sony MDR-ZX110A On-Ear Stereo Headphones";
+        asin = "B00M1NEUKK";
         category = "Electronics";
         subcategory = "Audio";
-        price = 229.99;
-        mrp = 299.99;
-        rating = 4.8;
-        reviewCount = 720;
-        bsr = 800;
-        estimatedMonthlySales = 600;
-        brand = "SoundMax";
+        price = 599.0;
+        mrp = 1390.0;
+        rating = 4.1;
+        reviewCount = 60000;
+        bsr = 10;
+        estimatedMonthlySales = 8000;
+        brand = "Sony";
+        sellerType = #fba;
+        availableStock = 12000;
+        margin = calculateMargin(200.0, 599.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "E006";
+        productName = "Pigeon by Stovekraft Amaze Plus Electric Kettle (1.5 L)";
+        asin = "B07Z2M7H6Y";
+        category = "Home & Kitchen";
+        subcategory = "Appliances";
+        price = 479.0;
+        mrp = 1665.0;
+        rating = 4.2;
+        reviewCount = 13000;
+        bsr = 12;
+        estimatedMonthlySales = 2500;
+        brand = "Pidilite";
         sellerType = #easyShip;
-        availableStock = 300;
-        margin = calculateMargin(110.0, 229.99);
+        availableStock = 8000;
+        margin = calculateMargin(200.0, 479.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "E007";
+        productName = "Philips GC1905 1440-Watt Steam Iron with Spray";
+        asin = "B0086ZTQ3W";
+        category = "Home & Kitchen";
+        subcategory = "Appliances";
+        price = 1699.0;
+        mrp = 2595.0;
+        rating = 4.3;
+        reviewCount = 2920;
+        bsr = 15;
+        estimatedMonthlySales = 1500;
+        brand = "Philips";
+        sellerType = #fba;
+        availableStock = 4000;
+        margin = calculateMargin(800.0, 1699.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "E008";
+        productName = "HP 100 Wired USB Mouse with 1600 DPI Optical Sensor";
+        asin = "B08DRZTNRJ";
+        category = "Electronics";
+        subcategory = "Computer Accessories";
+        price = 249.0;
+        mrp = 540.0;
+        rating = 4.4;
+        reviewCount = 87000;
+        bsr = 22;
+        estimatedMonthlySales = 20000;
+        brand = "HP";
+        sellerType = #fba;
+        availableStock = 35000;
+        margin = calculateMargin(100.0, 249.0);
         lastModified = Time.now();
         images = [];
       },
@@ -424,78 +386,116 @@ actor {
   func getHomeKitchenProducts() : [Product] {
     [
       {
-        id = "17";
-        productName = "Stainless Steel Water Bottle";
-        asin = "B084654915";
+        id = "4";
+        productName = "Borosil Glass Food Storage Container Set 500ml - Pack of 4";
+        asin = "B07SMPNHTW";
+        category = "Home & Kitchen";
+        subcategory = "Food Storage";
+        price = 299.0;
+        mrp = 499.0;
+        rating = 4.5;
+        reviewCount = 25000;
+        bsr = 32;
+        estimatedMonthlySales = 5000;
+        brand = "Borosil";
+        sellerType = #fba;
+        availableStock = 10000;
+        margin = calculateMargin(120.0, 299.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "5";
+        productName = "Milton Thermosteel Flip Lid Flask, 350ml, Silver";
+        asin = "B072VVMFFQ";
         category = "Home & Kitchen";
         subcategory = "Drinkware";
-        price = 29.99;
-        mrp = 39.99;
-        rating = 4.7;
-        reviewCount = 400;
-        bsr = 950;
-        estimatedMonthlySales = 700;
-        brand = "EcoSip";
-        sellerType = #easyShip;
-        availableStock = 450;
-        margin = calculateMargin(12.99, 29.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "18";
-        productName = "Insulated Lunch Box";
-        asin = "B074532189";
-        category = "Home & Kitchen";
-        subcategory = "Food Storage";
-        price = 34.99;
-        mrp = 49.99;
-        rating = 4.5;
-        reviewCount = 250;
-        bsr = 1200;
-        estimatedMonthlySales = 600;
-        brand = "FreshKeep";
-        sellerType = #fba;
-        availableStock = 300;
-        margin = calculateMargin(14.99, 34.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "19";
-        productName = "Collapsible Food Containers";
-        asin = "B093178454";
-        category = "Home & Kitchen";
-        subcategory = "Food Storage";
-        price = 29.99;
-        mrp = 39.99;
-        rating = 4.6;
-        reviewCount = 130;
-        bsr = 1450;
-        estimatedMonthlySales = 400;
-        brand = "FreshKeep";
-        sellerType = #easyShip;
-        availableStock = 250;
-        margin = calculateMargin(8.99, 29.99);
-        lastModified = Time.now();
-        images = [];
-      },
-      {
-        id = "20";
-        productName = "Bamboo Serving Tray";
-        asin = "B095317845";
-        category = "Home & Kitchen";
-        subcategory = "Serveware";
-        price = 24.99;
-        mrp = 34.99;
+        price = 349.0;
+        mrp = 599.0;
         rating = 4.3;
-        reviewCount = 90;
-        bsr = 1800;
-        estimatedMonthlySales = 300;
-        brand = "EcoSip";
-        sellerType = #sellerFulfilled;
-        availableStock = 120;
-        margin = calculateMargin(7.99, 24.99);
+        reviewCount = 14560;
+        bsr = 16;
+        estimatedMonthlySales = 4800;
+        brand = "Milton";
+        sellerType = #fba;
+        availableStock = 12000;
+        margin = calculateMargin(150.0, 349.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "6";
+        productName = "Solimo Non-Stick Fry Pan (20 cm), Induction & Gas Compatible";
+        asin = "B076W53H4S";
+        category = "Home & Kitchen";
+        subcategory = "Kitchen";
+        price = 269.0;
+        mrp = 595.0;
+        rating = 4.4;
+        reviewCount = 11200;
+        bsr = 20;
+        estimatedMonthlySales = 3000;
+        brand = "Amazon Brand - Solimo";
+        sellerType = #fba;
+        availableStock = 7000;
+        margin = calculateMargin(100.0, 269.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "7";
+        productName = "Pigeon Stainless Steel Knife Set (Set of 6)";
+        asin = "B07DX3CQJX";
+        category = "Home & Kitchen";
+        subcategory = "Kitchen";
+        price = 189.0;
+        mrp = 299.0;
+        rating = 4.2;
+        reviewCount = 9300;
+        bsr = 25;
+        estimatedMonthlySales = 2500;
+        brand = "Pigeon";
+        sellerType = #fba;
+        availableStock = 6000;
+        margin = calculateMargin(80.0, 189.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "8";
+        productName = "Amazon Brand - Solimo Plastic Storage Container Set";
+        asin = "B07S62T6G8";
+        category = "Home & Kitchen";
+        subcategory = "Food Storage";
+        price = 229.0;
+        mrp = 399.0;
+        rating = 4.3;
+        reviewCount = 12828;
+        bsr = 18;
+        estimatedMonthlySales = 4000;
+        brand = "Amazon Brand - Solimo";
+        sellerType = #fba;
+        availableStock = 8500;
+        margin = calculateMargin(90.0, 229.0);
+        lastModified = Time.now();
+        images = [];
+      },
+      {
+        id = "9";
+        productName = "Checkered Beans Ethnic Cropped Top";
+        asin = "B09TJK9ZJM";
+        category = "Fashion";
+        subcategory = "Apparel";
+        price = 499.0;
+        mrp = 1499.0;
+        rating = 4.0;
+        reviewCount = 1800;
+        bsr = 50;
+        estimatedMonthlySales = 1200;
+        brand = "Checkered Beans";
+        sellerType = #easyShip;
+        availableStock = 3200;
+        margin = calculateMargin(200.0, 499.0);
         lastModified = Time.now();
         images = [];
       },
@@ -520,6 +520,36 @@ actor {
     not filters.lowFBACount and
     not filters.highReviewGrowth and
     not filters.highMarginThreshold;
+  };
+
+  func isValidASIN(asin : Text) : Bool {
+    asin.size() == 10;
+  };
+
+  func isValidProductName(productName : Text) : Bool {
+    productName.size() > 0;
+  };
+
+  func isValidPrice(price : Float) : Bool {
+    price > 0.0 and price < 100000.0;
+  };
+
+  func validateProductData(product : Product) : Bool {
+    isValidProductName(product.productName) and
+    isValidASIN(product.asin) and
+    isValidPrice(product.price);
+  };
+
+  func logValidationError(product : Product) {
+    if (not isValidProductName(product.productName)) {
+      Runtime.trap("Invalid productName for product ID: " # product.id);
+    };
+    if (not isValidASIN(product.asin)) {
+      Runtime.trap("Invalid ASIN for product ID: " # product.id);
+    };
+    if (not isValidPrice(product.price)) {
+      Runtime.trap("Invalid price for product ID: " # product.id);
+    };
   };
 
   func applyCategory(product : Product, category : ?Text) : Bool {
@@ -612,6 +642,12 @@ actor {
     let homeKitchenProducts = getHomeKitchenProducts();
 
     let allProducts = electronicsProducts.concat(homeKitchenProducts);
+
+    for (product in allProducts.values()) {
+      if (not validateProductData(product)) {
+        logValidationError(product);
+      };
+    };
 
     let finalProducts = filterProducts(allProducts, filters);
 
@@ -802,4 +838,3 @@ actor {
     await processProductUpdates();
   };
 };
-

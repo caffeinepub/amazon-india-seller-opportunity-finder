@@ -1,32 +1,32 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-23T19:36:40.089Z",
+  "generatedAt": "2026-02-23T19:50:59.814Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
     "total": 5,
-    "implemented": 3,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-79",
-        "summary": "Add ASIN field to the Product type in backend/main.mo, storing it as a Text value (10-character alphanumeric Amazon identifier)",
+        "id": "REQ-84",
+        "summary": "Audit and fix the ASIN field values in the mock product data returned by backend/main.mo searchProducts method to ensure all ASINs are valid 10-character alphanumeric Amazon identifiers (e.g., B08N5WRWNW, B09G9FPHY6) instead of placeholder or incorrect values",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-80",
-        "summary": "Add productName field to the Product type in backend/main.mo if not already present, ensuring it stores the full product title",
+        "id": "REQ-85",
+        "summary": "Audit and fix the price field values in the mock product data in backend/main.mo to ensure prices are accurate, realistic, and consistent with the product category and type, using actual Amazon.in marketplace pricing patterns (e.g., ₹299 for kitchen containers, ₹1499 for electronics, ₹499 for fashion items)",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-81",
-        "summary": "Update ProductCard component in frontend/src/components/ProductCard.tsx to display the ASIN field prominently, adding it near the product title or category information",
+        "id": "REQ-86",
+        "summary": "Verify that the ProductCard component in frontend/src/components/ProductCard.tsx is correctly reading and displaying the productName field from the Product data structure, ensuring the actual product name appears as the primary heading instead of placeholder or missing text",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/ProductCard.tsx"
@@ -36,26 +36,18 @@
         ]
       },
       {
-        "id": "REQ-82",
-        "summary": "Ensure the product name/title is displayed prominently as the primary heading in ProductCard component in frontend/src/components/ProductCard.tsx",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ProductCard.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ProductCard.tsx"
-        ]
+        "id": "REQ-87",
+        "summary": "Update the mock product data in backend/main.mo to include realistic, detailed product names for each item that match their category and specifications (e.g., 'Borosil Glass Food Storage Container Set 500ml - Pack of 4', 'boAt Airdopes 141 Bluetooth Truly Wireless in Ear Earbuds', 'Safari Thorium 55 Cms Hardsided Check-in Luggage')",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
-        "id": "REQ-83",
-        "summary": "Update the Product type definition in frontend type declarations to include asin and productName/title fields, ensuring type safety across the frontend",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/backend.d.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/backend.d.ts"
-        ]
+        "id": "REQ-88",
+        "summary": "Add data validation logging in backend/main.mo searchProducts method that verifies each product object contains valid non-empty values for productName, asin, and price fields before returning the results, logging any products with missing or invalid data",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
@@ -66,14 +58,9 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/OpportunityLeaderboard.tsx",
     "frontend/src/components/ProductCard.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
+    "frontend/src/components/ProductGrid.tsx",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/CompetitorAnalysis.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

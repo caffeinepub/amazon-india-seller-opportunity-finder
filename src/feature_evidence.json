@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-productcard-component-in-frontend-src-components-productcard-tsx-to-display-the-asin-field-prominently-adding-it-near-the-product-title-or-category-information",
-      "featureTitle": "Update ProductCard component in frontend/src/components/ProductCard.tsx to display the ASIN field prominently, adding it near the product title or category information",
+      "featureId": "feature-verify-that-the-productcard-component-in-frontend-src-components-productcard-tsx-is-correctly-reading-and-displaying-the-productname-field-from-the-product-data-structure-ensuring-the-actual-product-name-appears-as-the-primary-heading-instead-of-placeholder-or-missing-text",
+      "featureTitle": "Verify that the ProductCard component in frontend/src/components/ProductCard.tsx is correctly reading and displaying the productName field from the Product data structure, ensuring the actual product name appears as the primary heading instead of placeholder or missing text",
       "files": [
         "frontend/src/components/ProductCard.tsx"
       ],
@@ -17,45 +17,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-81"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-product-name-title-is-displayed-prominently-as-the-primary-heading-in-productcard-component-in-frontend-src-components-productcard-tsx",
-      "featureTitle": "Ensure the product name/title is displayed prominently as the primary heading in ProductCard component in frontend/src/components/ProductCard.tsx",
-      "files": [
-        "frontend/src/components/ProductCard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-82"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-product-type-definition-in-frontend-type-declarations-to-include-asin-and-productname-title-fields-ensuring-type-safety-across-the-frontend",
-      "featureTitle": "Update the Product type definition in frontend type declarations to include asin and productName/title fields, ensuring type safety across the frontend",
-      "files": [],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-83"
+        "REQ-86"
       ],
       "confidence": "high"
     }

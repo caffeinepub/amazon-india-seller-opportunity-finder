@@ -5,48 +5,9 @@ import Principal "mo:core/Principal";
 import Storage "blob-storage/Storage";
 
 module {
-  type ProductId = Text;
-
-  type SellerType = {
-    #fba;
-    #easyShip;
-    #sellerFulfilled;
-  };
-
-  type UserProfile = {
-    name : Text;
-    email : Text;
-    subscriptionTier : {
-      #free;
-      #pro;
-      #premium;
-    };
-    savedProductLists : [Text];
-    alertPreferences : [Text];
-  };
-
-  type OldProduct = {
-    id : ProductId;
-    title : Text;
-    category : Text;
-    subcategory : Text;
-    price : Float;
-    mrp : Float;
-    rating : Float;
-    reviewCount : Nat;
-    bsr : Nat;
-    estimatedMonthlySales : Nat;
-    brand : Text;
-    sellerType : SellerType;
-    availableStock : Nat;
-    margin : Float;
-    lastModified : Time.Time;
-    images : [Storage.ExternalBlob]; // Now typed as ExternalBlob array
-  };
-
-  type NewProduct = {
-    id : ProductId;
-    productName : Text; // title --> productName
+  public type OldProduct = {
+    id : Text;
+    productName : Text;
     asin : Text;
     category : Text;
     subcategory : Text;
@@ -57,34 +18,43 @@ module {
     bsr : Nat;
     estimatedMonthlySales : Nat;
     brand : Text;
-    sellerType : SellerType;
+    sellerType : {
+      #fba;
+      #easyShip;
+      #sellerFulfilled;
+    };
     availableStock : Nat;
     margin : Float;
     lastModified : Time.Time;
     images : [Storage.ExternalBlob];
   };
 
-  type OldActor = {
-    products : Map.Map<ProductId, OldProduct>;
-    userProfiles : Map.Map<Principal, UserProfile>;
+  public type OldOpportunityScore = {
+    score : Float;
+    demandScore : Float;
+    competitionScore : Float;
+    growthScore : Float;
+    marginScore : Float;
   };
 
-  type NewActor = {
-    products : Map.Map<ProductId, NewProduct>;
-    userProfiles : Map.Map<Principal, UserProfile>;
+  public type OldActor = {
+    products : Map.Map<Text, OldProduct>;
+    userProfiles : Map.Map<Principal, {
+      name : Text;
+      email : Text;
+      subscriptionTier : {
+        #free;
+        #pro;
+        #premium;
+      };
+      savedProductLists : [Text];
+      alertPreferences : [Text];
+    }>;
   };
 
-  func mapProduct(_id : Text, oldProduct : OldProduct) : NewProduct {
-    {
-      oldProduct with
-      productName = oldProduct.title; // Rename title to productName
-      asin = ""; // Add empty ASIN field
-    };
-  };
+  public type NewActor = OldActor;
 
-  // Main migration function
   public func run(old : OldActor) : NewActor {
-    let newProducts = old.products.map<ProductId, OldProduct, NewProduct>(mapProduct);
-    { old with products = newProducts };
+    old;
   };
 };

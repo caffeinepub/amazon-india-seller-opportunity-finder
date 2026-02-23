@@ -1,13 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Add ASIN and Product Name fields to product data and display them in the product cards.
+**Goal:** Fix incorrect ASIN, price, and product name display in the Amazon Seller Finder application.
 
 **Planned changes:**
-- Add ASIN field (10-character alphanumeric identifier) to Product type in backend
-- Add productName field to Product type in backend if not present
-- Update ProductCard component to display ASIN prominently with clear labeling
-- Ensure product name is displayed as the primary heading in ProductCard
-- Update frontend TypeScript Product interface to include asin and productName fields
+- Update mock product data in backend to use valid 10-character alphanumeric ASINs
+- Fix product prices to reflect realistic Amazon.in marketplace pricing patterns
+- Add realistic, detailed product names to all mock products
+- Verify ProductCard component correctly displays productName field
+- Add data validation logging for productName, asin, and price fields
 
-**User-visible outcome:** Users will see the ASIN and full product name displayed on each product card in the search results, making it easier to identify and reference specific Amazon products.
+**User-visible outcome:** Users will see correct, realistic product information including valid ASINs, accurate Indian market prices (₹), and detailed product names on all product cards.

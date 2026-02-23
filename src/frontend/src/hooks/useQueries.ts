@@ -3,105 +3,6 @@ import { useActor } from './useActor';
 import { SellerType } from '../backend';
 import type { Product, ProductSearchFilters, OpportunityScore, UserProfile } from '../backend';
 
-// Mock fallback products for testing
-const FALLBACK_PRODUCTS: Product[] = [
-  {
-    id: 'fallback-1',
-    productName: 'Fallback Wireless Headphones',
-    asin: 'B012345678',
-    category: 'Electronics',
-    subcategory: 'Audio',
-    price: 199.99,
-    mrp: 249.99,
-    rating: 4.5,
-    reviewCount: BigInt(1200),
-    bsr: BigInt(800),
-    estimatedMonthlySales: BigInt(500),
-    brand: 'SoundCore',
-    sellerType: SellerType.fba,
-    availableStock: BigInt(300),
-    margin: 0.25,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-  {
-    id: 'fallback-2',
-    productName: 'Fallback Water Bottle',
-    asin: 'B023456789',
-    category: 'Home & Kitchen',
-    subcategory: 'Drinkware',
-    price: 29.99,
-    mrp: 39.99,
-    rating: 4.7,
-    reviewCount: BigInt(900),
-    bsr: BigInt(1500),
-    estimatedMonthlySales: BigInt(800),
-    brand: 'EcoSip',
-    sellerType: SellerType.easyShip,
-    availableStock: BigInt(450),
-    margin: 0.32,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-  {
-    id: 'fallback-3',
-    productName: 'Fallback Yoga Mat',
-    asin: 'B034567890',
-    category: 'Sports',
-    subcategory: 'Yoga',
-    price: 49.99,
-    mrp: 59.99,
-    rating: 4.6,
-    reviewCount: BigInt(1100),
-    bsr: BigInt(1000),
-    estimatedMonthlySales: BigInt(650),
-    brand: 'FlexFit',
-    sellerType: SellerType.fba,
-    availableStock: BigInt(200),
-    margin: 0.28,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-  {
-    id: 'fallback-4',
-    productName: 'Fallback Bluetooth Speaker',
-    asin: 'B045678901',
-    category: 'Electronics',
-    subcategory: 'Audio',
-    price: 89.99,
-    mrp: 119.99,
-    rating: 4.4,
-    reviewCount: BigInt(850),
-    bsr: BigInt(900),
-    estimatedMonthlySales: BigInt(400),
-    brand: 'SoundWave',
-    sellerType: SellerType.easyShip,
-    availableStock: BigInt(250),
-    margin: 0.27,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-  {
-    id: 'fallback-5',
-    productName: 'Fallback Lunch Box',
-    asin: 'B056789012',
-    category: 'Home & Kitchen',
-    subcategory: 'Food Storage',
-    price: 34.99,
-    mrp: 49.99,
-    rating: 4.5,
-    reviewCount: BigInt(700),
-    bsr: BigInt(1400),
-    estimatedMonthlySales: BigInt(600),
-    brand: 'FreshKeep',
-    sellerType: SellerType.fba,
-    availableStock: BigInt(300),
-    margin: 0.3,
-    lastModified: BigInt(Date.now() * 1000000),
-    images: [],
-  },
-];
-
 export function useSearchProducts(filters: ProductSearchFilters) {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -222,14 +123,30 @@ export function useSearchProducts(filters: ProductSearchFilters) {
         console.log('✅ [useQueries] Products count:', result.success?.length || 0);
         
         if (result.success && result.success.length > 0) {
-          console.log('📦 [useQueries] First product sample:', {
-            id: result.success[0].id,
-            productName: result.success[0].productName,
-            asin: result.success[0].asin,
-            price: result.success[0].price,
-            margin: result.success[0].margin,
-            rating: result.success[0].rating,
-            reviewCount: result.success[0].reviewCount.toString(),
+          // Log all products to verify data integrity
+          result.success.forEach((product, index) => {
+            console.log(`📦 [useQueries] Product ${index + 1}:`, {
+              id: product.id,
+              productName: product.productName,
+              asin: product.asin,
+              price: product.price,
+              category: product.category,
+              margin: product.margin,
+              rating: product.rating,
+              reviewCount: product.reviewCount.toString(),
+              bsr: product.bsr.toString(),
+            });
+            
+            // Validate critical fields
+            if (!product.productName || product.productName.trim() === '') {
+              console.error(`❌ [useQueries] Product ${product.id} has empty productName!`);
+            }
+            if (!product.asin || product.asin.length !== 10) {
+              console.error(`❌ [useQueries] Product ${product.id} has invalid ASIN: ${product.asin}`);
+            }
+            if (!product.price || product.price <= 0) {
+              console.error(`❌ [useQueries] Product ${product.id} has invalid price: ${product.price}`);
+            }
           });
         } else {
           console.warn('⚠️ [useQueries] Backend returned empty array');

@@ -1,111 +1,109 @@
 {
   "kind": "build_request",
-  "title": "Add ASIN and Product Name fields to product data",
-  "projectName": "Amazon Seller Opportunity Finder",
-  "priority": "normal",
+  "title": "Fix incorrect ASIN, price, and product name display",
+  "projectName": "Amazon Seller Finder",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-79",
-      "text": "Add ASIN field to the Product type in backend/main.mo, storing it as a Text value (10-character alphanumeric Amazon identifier)",
+      "id": "REQ-84",
+      "text": "Audit and fix the ASIN field values in the mock product data returned by backend/main.mo searchProducts method to ensure all ASINs are valid 10-character alphanumeric Amazon identifiers (e.g., B08N5WRWNW, B09G9FPHY6) instead of placeholder or incorrect values",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-asin-request"
+          "msg-latest"
         ],
         "quotes": [
-          "please get ASIN and Product name too"
+          "wrong asin"
         ]
       },
       "acceptanceCriteria": [
-        "Product type includes asin field of type Text",
-        "All mock products have valid 10-character ASIN values (e.g., 'B08XYZABC1')",
-        "ASIN field is returned in searchProducts response"
+        "All products returned by searchProducts have valid ASIN format (10 alphanumeric characters)",
+        "ASINs are realistic Amazon.in product identifiers",
+        "No duplicate ASINs exist in the mock data"
       ]
     },
     {
-      "id": "REQ-80",
-      "text": "Add productName field to the Product type in backend/main.mo if not already present, ensuring it stores the full product title",
+      "id": "REQ-85",
+      "text": "Audit and fix the price field values in the mock product data in backend/main.mo to ensure prices are accurate, realistic, and consistent with the product category and type, using actual Amazon.in marketplace pricing patterns (e.g., ₹299 for kitchen containers, ₹1499 for electronics, ₹499 for fashion items)",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-asin-request"
+          "msg-latest"
         ],
         "quotes": [
-          "please get ASIN and Product name too"
+          "price wrong"
         ]
       },
       "acceptanceCriteria": [
-        "Product type includes productName or title field of type Text",
-        "All mock products have descriptive product names",
-        "Product name field is returned in searchProducts response"
+        "All product prices are realistic for their respective categories",
+        "Prices align with Indian market standards (using ₹ currency)",
+        "Price values are consistent with estimated sales and revenue calculations"
       ]
     },
     {
-      "id": "REQ-81",
-      "text": "Update ProductCard component in frontend/src/components/ProductCard.tsx to display the ASIN field prominently, adding it near the product title or category information",
+      "id": "REQ-86",
+      "text": "Verify that the ProductCard component in frontend/src/components/ProductCard.tsx is correctly reading and displaying the productName field from the Product data structure, ensuring the actual product name appears as the primary heading instead of placeholder or missing text",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-asin-request"
+          "msg-latest"
         ],
         "quotes": [
-          "please get ASIN and Product name too"
+          "no actual product name"
         ]
       },
       "acceptanceCriteria": [
-        "ASIN is displayed on each product card",
-        "ASIN is labeled clearly (e.g., 'ASIN: B08XYZABC1')",
-        "ASIN uses monospace or distinctive styling for readability"
+        "ProductCard displays the productName field as the primary heading",
+        "Product names are visible and properly formatted on all product cards",
+        "No empty, null, or placeholder values appear in the product name position"
       ]
     },
     {
-      "id": "REQ-82",
-      "text": "Ensure the product name/title is displayed prominently as the primary heading in ProductCard component in frontend/src/components/ProductCard.tsx",
-      "target": "frontend",
+      "id": "REQ-87",
+      "text": "Update the mock product data in backend/main.mo to include realistic, detailed product names for each item that match their category and specifications (e.g., 'Borosil Glass Food Storage Container Set 500ml - Pack of 4', 'boAt Airdopes 141 Bluetooth Truly Wireless in Ear Earbuds', 'Safari Thorium 55 Cms Hardsided Check-in Luggage')",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-asin-request"
+          "msg-latest"
         ],
         "quotes": [
-          "please get ASIN and Product name too"
+          "no actual product name"
         ]
       },
       "acceptanceCriteria": [
-        "Product name is the most prominent text element on the card",
-        "Product name supports text truncation or wrapping for long titles",
-        "Product name is clearly visible in both light and dark modes"
+        "All products have descriptive, realistic product names",
+        "Product names include relevant specifications (capacity, model, features)",
+        "Names match the product category and price point",
+        "Names follow Amazon.in product naming conventions"
       ]
     },
     {
-      "id": "REQ-83",
-      "text": "Update the Product type definition in frontend type declarations to include asin and productName/title fields, ensuring type safety across the frontend",
-      "target": "frontend",
+      "id": "REQ-88",
+      "text": "Add data validation logging in backend/main.mo searchProducts method that verifies each product object contains valid non-empty values for productName, asin, and price fields before returning the results, logging any products with missing or invalid data",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-asin-request"
-        ],
-        "quotes": [
-          "please get ASIN and Product name too"
+          "msg-latest"
         ]
       },
       "acceptanceCriteria": [
-        "TypeScript Product interface includes asin: string field",
-        "TypeScript Product interface includes productName or title: string field",
-        "No type errors in components using Product type"
+        "Backend logs any products with missing productName, asin, or price",
+        "Validation occurs before products are returned to frontend",
+        "Invalid products are either fixed or filtered out from results"
       ]
     }
   ],
   "constraints": [
-    "Maintain single-actor backend architecture",
+    "Maintain single-actor architecture in backend/main.mo",
     "Do not modify immutable frontend paths (useInternetIdentity, useActor, main.tsx, components/ui)",
-    "ASIN must be a valid 10-character alphanumeric identifier format",
-    "Product names should be realistic Amazon.in product titles"
+    "Ensure ASIN format is exactly 10 alphanumeric characters",
+    "Use realistic Amazon.in product data patterns"
   ],
   "nonGoals": [
-    "Real Amazon.in API integration",
-    "ASIN validation against actual Amazon database",
-    "Product name translation or localization",
-    "Search by ASIN functionality"
+    "Implementing real Amazon API integration",
+    "Changing the Product type schema structure",
+    "Modifying the ProductCard component layout or styling",
+    "Adding new fields beyond fixing existing productName, asin, and price"
   ],
   "imageRequirements": {
     "required": [],

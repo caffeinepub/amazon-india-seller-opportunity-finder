@@ -4,12 +4,25 @@ import { Badge } from '@/components/ui/badge';
 import { Star, TrendingUp, Package } from 'lucide-react';
 import { formatCurrency, formatNumber } from '../utils/formatters';
 import type { Product } from '../backend';
+import { useEffect } from 'react';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  // Debug logging to verify product data
+  useEffect(() => {
+    console.log('🏷️ [ProductCard] Rendering product:', {
+      id: product.id,
+      productName: product.productName,
+      asin: product.asin,
+      price: product.price,
+      category: product.category,
+      margin: product.margin,
+    });
+  }, [product]);
+
   const monthlyRevenue = product.price * Number(product.estimatedMonthlySales);
   
   // Convert margin from decimal to percentage (e.g., 0.25 -> 25%)
@@ -24,11 +37,20 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const opportunity = getOpportunityLevel(product.margin);
 
+  // Validate critical fields
+  const hasValidData = product.productName && product.asin && product.price > 0;
+  
+  if (!hasValidData) {
+    console.error('❌ [ProductCard] Invalid product data:', product);
+  }
+
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
-          <CardTitle className="text-lg line-clamp-2">{product.productName}</CardTitle>
+          <CardTitle className="text-lg line-clamp-2">
+            {product.productName || 'Unknown Product'}
+          </CardTitle>
           <Badge className={`${opportunity.color} text-white shrink-0`}>
             {opportunity.label}
           </Badge>
@@ -36,12 +58,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>{product.category} • {product.subcategory}</span>
         </div>
-        {product.asin && (
-          <div className="mt-1">
-            <span className="text-xs font-medium text-muted-foreground">ASIN: </span>
-            <span className="text-xs font-mono font-semibold text-foreground">{product.asin}</span>
+        <div className="mt-2 p-2 bg-muted/50 rounded-md">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-muted-foreground">ASIN:</span>
+            <span className="text-sm font-mono font-bold text-foreground tracking-wide">
+              {product.asin || 'N/A'}
+            </span>
           </div>
-        )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
